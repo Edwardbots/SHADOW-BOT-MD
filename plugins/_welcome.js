@@ -1,75 +1,149 @@
-import fetch from 'node-fetch';
+import fs from 'fs'
+import { WAMessageStubType} from '@whiskeysockets/baileys'
 
-export async function before(m, { conn, participants, groupMetadata}) {
-  if (!m.messageStubType ||!m.isGroup) return true;
+const newsletterJid = '120363423523597117@newsletter';
+const newsletterName = '👑 SHADOW-BOT-MD| ᴄʜᴀɴɴᴇʟ-ʙᴏᴛ 🌌';
+const packname = 'shadow-BOT-MD'
 
-  let vn = 'https://files.catbox.moe/viiztg.mp3';
-  let vn2 = 'https://files.catbox.moe/u8cr1t.mp3';
-  let chat = global.db.data.chats[m.chat];
-  const getMentionedJid = () => {
-    return m.messageStubParameters.map(param => `${param}@s.whatsapp.net`);
+const iconos = [
+  'https://kirito.my/media/images/17513408_k.jpg',
+  'https://kirito.my/media/images/49677622_k.jpg',
+  'https://kirito.my/media/images/49677622_k.jpg',
+  'https://kirito.my/media/images/71283551_k.jpg',
+ ];
+
+const getRandomIcono = () => iconos[Math.floor(Math.random() * iconos.length)];
+
+async function generarBienvenida({ conn, userId, groupMetadata, chat}) {
+  const username = `@${userId.split('@')[0]}`;
+  const pp = await conn.profilePictureUrl(userId, 'image').catch(() => 'https://raw.githubusercontent.com/The-King-Destroy/Adiciones/main/Contenido/1745522645448.jpeg');
+  const fecha = new Date().toLocaleDateString("es-ES", { timeZone: "America/Santo_Domingo", day: 'numeric', month: 'long', year: 'numeric'});
+  const groupSize = groupMetadata.participants.length + 1;
+  const desc = groupMetadata.desc?.toString() || 'Sin descripción';
+
+  let caption;
+  if (chat.welcomeText) {
+    caption = chat.welcomeText
+.replace(/@user/g, username)
+.replace(/@subject/g, groupMetadata.subject)
+.replace(/@desc/g, desc);
+} else {
+    const defaultWelcomeMessage = `╭─「 👻 𝐒𝐇𝐀𝐃𝐎𝐖 𝐆𝐀𝐑𝐃𝐄𝐍: 𝐈𝐍𝐈𝐂𝐈𝐎 」─╮
+
+@user ha sido convocado por las sombras...
+Bienvenid@ al dominio secreto de *@subject*.
+
+Tu llegada no es casual. Cada paso será observado.
+Tu poder será forjado en silencio. Tu lealtad, puesta a prueba.
+
+╰─「 🌌 𝐈𝐍𝐅𝐎 𝐃𝐄𝐋 𝐆𝐑𝐔𝐏𝐎 」─╯
+🧿 Miembros: ${groupSize}
+📅 Fecha: ${fecha}
+📜 Descripción:
+${desc}
+
+> Usa *#setwelcome* para personalizar este mensaje.`;
+
+    caption = defaultWelcomeMessage
+.replace(/@user/g, username)
+.replace(/@subject/g, groupMetadata.subject);
+}
+  return { pp, caption, mentions: [userId]};
+}
+
+async function generarDespedida({ conn, userId, groupMetadata, chat}) {
+  const username = `@${userId.split('@')[0]}`;
+  const pp = await conn.profilePictureUrl(userId, 'image').catch(() => 'https://kirito.my/media/images/24391875_k.jpg');
+  const fecha = new Date().toLocaleDateString("es-ES", { timeZone: "America/Santo_Domingo", day: 'numeric', month: 'long', year: 'numeric'});
+  const groupSize = groupMetadata.participants.length - 1;
+
+  let caption;
+  if (chat.byeText) {
+    caption = chat.byeText
+.replace(/@user/g, username)
+.replace(/@subject/g, groupMetadata.subject);
+} else {
+    const defaultByeMessage = `╭─「 🌌 𝐒𝐇𝐀𝐃𝐎𝐖 𝐆𝐀𝐑𝐃𝐄𝐍: 𝐑𝐄𝐓𝐈𝐑𝐀𝐃𝐀 」─╮
+
+@user ha abandonado el círculo de las sombras.
+Su presencia se desvanece... como todo lo que no deja huella.
+
+Grupo: *@subject*
+
+Que su memoria permanezca en silencio.
+Las sombras no olvidan, pero tampoco lloran.
+
+╰─「 🌌 𝐄𝐒𝐓𝐀𝐃𝐎 𝐀𝐂𝐓𝐔𝐀𝐋 」─╯
+📉 Miembros: ${groupSize}
+📅 Fecha: ${fecha}
+
+> Usa *#setbye* para personalizar este mensaje.`;
+
+    caption = defaultByeMessage
+.replace(/@user/g, username)
+.replace(/@subject/g, groupMetadata.subject);
+}
+  return { pp, caption, mentions: [userId]};
+}
+
+let handler = m => m;
+
+handler.before = async function (m, { conn, participants, groupMetadata}) {if (!m.messageStubType ||!m.isGroup) return!0;
+
+  const chat = global.db.data.chats[m.chat];
+  if (!chat) return!0;
+
+  const primaryBot = chat.botPrimario;
+  if (primaryBot && conn.user.jid!== primaryBot) return!0;
+
+  const userId = m.messageStubParameters[0];
+
+  if (chat.welcome && m.messageStubType == WAMessageStubType.GROUP_PARTICIPANT_ADD) {
+    const { pp, caption, mentions} = await generarBienvenida({ conn, userId, groupMetadata, chat});
+    const contextInfo = {
+      mentionedJid: mentions,
+      isForwarded: true,
+      forwardingScore: 999,
+      forwardedNewsletterMessageInfo: {
+        newsletterJid,
+        newsletterName,
+        serverMessageId: -1
+},
+      externalAdReply: {
+        title: packname,
+        body: '🕶️ 𝐒𝐡𝐚𝐝𝐨𝐰 𝐆𝐚𝐫𝐝𝐞𝐧 𝐭𝐞 𝐝𝐚 𝐥𝐚 𝐛𝐢𝐞𝐧𝐯𝐞𝐧𝐢𝐝𝐚...',
+        thumbnailUrl: getRandomIcono(),
+        sourceUrl: global.redes,
+        mediaType: 1,
+        renderLargerThumbnail: false
+}
+};
+    await conn.sendMessage(m.chat, { image: { url: pp}, caption, contextInfo}, { quoted: null});
+}
+
+  if (chat.welcome && (m.messageStubType == WAMessageStubType.GROUP_PARTICIPANT_REMOVE || m.messageStubType == WAMessageStubType.GROUP_PARTICIPANT_LEAVE)) {
+    const { pp, caption, mentions} = await generarDespedida({ conn, userId, groupMetadata, chat});
+    const contextInfo = {
+      mentionedJid: mentions,
+      isForwarded: true,
+      forwardingScore: 999,
+      forwardedNewsletterMessageInfo: {
+        newsletterJid,
+        newsletterName,
+        serverMessageId: -1
+},
+      externalAdReply: {
+        title: packname,
+        body: '🌌 𝐋𝐚𝐬 𝐬𝐨𝐦𝐛𝐫𝐚𝐬 𝐬𝐞 𝐜𝐢𝐞𝐫𝐫𝐚𝐧 𝐬𝐢𝐧 𝐫𝐞𝐦𝐨𝐫𝐬𝐨...',
+        thumbnailUrl: getRandomIcono(),
+        sourceUrl: global.redes,
+        mediaType: 1,
+        renderLargerThumbnail: false
+}
+};
+    await conn.sendMessage(m.chat, { image: { url: pp}, caption, contextInfo}, { quoted: null});
+}
 };
 
-  let who = m.messageStubParameters[0] + '@s.whatsapp.net';
-  let user = global.db.data.users[who];
-  let userName = user? user.name: await conn.getName(who);
-
-  const thumbnail = await (await fetch('https://files.catbox.moe/uak1qu.jpg')).buffer();
-  const canalOficial = 'https://whatsapp.com/channel/0029VbArz9fAO7RGy2915k3O';
-
-  if (chat.welcome && m.messageStubType === 27) {
-    this.sendMessage(m.chat, {
-      audio: { url: vn},
-      mimetype: 'audio/mpeg',
-      ptt: false, // ← cambiado a false
-      fileName: `bienvenida.mp3`,
-      contextInfo: {
-        forwardedNewsletterMessageInfo: {
-          newsletterJid: "120363403739366547@newsletter",
-          serverMessageId: '',
-          newsletterName: 'shadow'
-},
-        forwardingScore: 9999999,
-        isForwarded: true,
-        mentionedJid: getMentionedJid(),
-        externalAdReply: {
-          title: `✨ Bienvenido/a ${userName} ✨`,
-          body: `¡Nos alegra tenerte aquí en *${groupMetadata.subject}*!`,
-          previewType: "PHOTO",
-          thumbnail,
-          sourceUrl: canalOficial,
-          showAdAttribution: true
-}
-},
-      seconds: '5278263792'
-}, { quoted: fkontak, ephemeralExpiration: 24 * 60 * 100, disappearingMessagesInChat: 24 * 60 * 100});
-}
-
-  if (chat.welcome && (m.messageStubType === 28 || m.messageStubType === 32)) {
-    this.sendMessage(m.chat, {
-      audio: { url: vn2},
-      mimetype: 'audio/mpeg',
-      ptt: false, // ← cambiado a false
-      fileName: `despedida.mp3`,
-      contextInfo: {
-        forwardedNewsletterMessageInfo: {
-          newsletterJid: "120363403739366547@newsletter",
-          serverMessageId: '',
-          newsletterName: 'shadow'
-},
-        forwardingScore: 9999999,
-        isForwarded: true,
-        mentionedJid: getMentionedJid(),
-        externalAdReply: {
-          title: `❀ Adiós ${userName} ❀`,
-          body: `Esperamos verte de nuevo por *${groupMetadata.subject}*`,
-          previewType: "PHOTO",
-          thumbnail,
-          sourceUrl: canalOficial,
-          showAdAttribution: true
-}
-},
-      seconds: '5278263792'
-}, { quoted: fkontak, ephemeralExpiration: 24 * 60 * 100, disappearingMessagesInChat: 24 * 60 * 100});
-}
-        }
+export { generarBienvenida, generarDespedida};
+export default handler;
