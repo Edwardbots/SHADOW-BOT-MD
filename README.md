@@ -24,11 +24,10 @@ html
 Este bot no es solo funcional, es una declaración de estilo. Su diseño modular permite personalizar comandos, añadir plugins, y adaptarlo a cualquier necesidad. Ideal para quienes buscan un bot con carácter, rendimiento y estética.
 
 <img src="https://qu.ax/Ncuyr.jpg" alt="shadow-BOT" style="width: 100%; height: auto; max-width: 500px;">
- ### **`⚠️ Advertencia importante`**
+ ### **`⚠️ aviso importante`**
 
 > [!CAUTION]\
-> Este proyecto está protegido por una **licencia propietaria**.\
-> ⚠️ **Queda estrictamente prohibido distribuir el código sin autorización del autor `Deylin`.**
+> este bot no es compatible por ahora con termux nu cloud shell
 
 ### **`🥀 𝙘𝙤𝙡𝙖𝙗𝙤𝙧𝙖𝙙𝙤𝙧𝙚𝙨`**
 <a
@@ -38,6 +37,7 @@ href="https://github.com/Miku-18"><img src="https://github.com/Miku-18.png" widt
 ### ** `🌌𝘾𝙍𝙀𝘼𝘿𝙊𝙍 𝙙𝙚 𝙨𝙝𝙖𝙙𝙤𝙬 🌌`**
 <a
 href="https://github.com/yosue891-Chian"><img src="https://github.com/yosue891.png" width="150" height="150" alt="yosue891"/></a>
+
 
 
 
