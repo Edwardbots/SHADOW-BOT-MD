@@ -4,6 +4,13 @@ const creatorNumber = '584242773183';
 // Objeto para guardar últimos usos de keywords
 let lastKeywordUse = {};
 
+// 🎭 Lista de stickers para "xd"
+const xdStickers = [
+    'https://raw.githubusercontent.com/UploadsAdonix/archivos/main/1763219268984-97d6ce.webp',
+    'https://raw.githubusercontent.com/UploadsAdonix/archivos/main/1763219298568-dd6d8c.webp',
+    'https://raw.githubusercontent.com/UploadsAdonix/archivos/main/1763219283881-c7393d.webp'
+];
+
 function pickRandom(list) {
     return list[Math.floor(Math.random() * list.length)];
 }
@@ -48,11 +55,12 @@ export async function before(m, { conn }) {
         return;
     }
 
-    // 🎭 Si escriben "xd" → siempre responde con sticker
+    // 🎭 Si escriben "xd" → siempre responde con sticker aleatorio
     if (/^xd$/i.test(m.text)) {
+        const randomSticker = pickRandom(xdStickers);
         await conn.sendMessage(
             m.chat,
-            { sticker: { url: 'https://stickerswiki.uguu.se/ejemplo.webp' } }, // coloca tu sticker aquí
+            { sticker: { url: randomSticker } },
             { quoted: m }
         );
         return;
