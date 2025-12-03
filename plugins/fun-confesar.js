@@ -41,7 +41,7 @@ ${pesan}
                     body: 'Responde con .respuesta (id) (Mensaje)',
                     mediaType: 1,
                     renderLargerThumbnail: true,
-                    thumbnailUrl: 'https://qu.ax/QXPmz.jpg', // imagen estilo shadow + navidad
+                    thumbnailUrl: 'https://files.catbox.moe/ityzkw.jpg', // att:shadow uwu 
                     sourceUrl: channel,
                 }
             }
