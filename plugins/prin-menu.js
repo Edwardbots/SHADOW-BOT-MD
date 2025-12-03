@@ -6,7 +6,6 @@ const { prepareWAMessageMedia, generateWAMessageFromContent } = (await import("@
 
 let handler = async (m, { conn, usedPrefix }) => {
   try {
-    // ❌ Validación de registro
     const isRegistered = global.db.data.users[m.sender]?.registered;
     if (!isRegistered) {
       return conn.sendMessage(
@@ -36,7 +35,6 @@ let handler = async (m, { conn, usedPrefix }) => {
       );
     }
 
-    // Construcción del menú
     let menu = {};
     for (let plugin of Object.values(global.plugins)) {
       if (!plugin || !plugin.help) continue;
@@ -47,14 +45,12 @@ let handler = async (m, { conn, usedPrefix }) => {
       }
     }
 
-    // Uptime
     let uptimeSec = process.uptime();
     let hours = Math.floor(uptimeSec / 3600);
     let minutes = Math.floor((uptimeSec % 3600) / 60);
     let seconds = Math.floor(uptimeSec % 60);
     let uptimeStr = `${hours}h ${minutes}m ${seconds}s`;
 
-    // Configuración inicial
     let botNameToShow = global.botname || "Shadow 🎄";
     let bannerUrl = global.michipg || "https://n.uguu.se/ZZHiiljb.jpg";
     let videoUrl = "https://raw.githubusercontent.com/UploadsAdonix/archivos/main/1763142155838-e70c63.mp4";
@@ -67,24 +63,19 @@ let handler = async (m, { conn, usedPrefix }) => {
         if (subBotConfig.name) botNameToShow = subBotConfig.name;
         if (subBotConfig.banner) bannerUrl = subBotConfig.banner;
         if (subBotConfig.video) videoUrl = subBotConfig.video;
-      } catch (e) {
-        console.error(e);
-      }
+      } catch (e) {}
     }
 
-    // Hora y fecha
     const tz = "America/Tegucigalpa";
     const now = moment.tz(tz);
     const hour = now.hour();
     const timeStr = now.format("HH:mm:ss");
     const dateStr = now.format("DD/MM/YYYY");
 
-    // Saludo navideño
     let saludo = "🎅 ¡Feliz Navidad!";
     if (hour >= 12 && hour < 18) saludo = "🎁 ¡Feliz tarde navideña!";
     else if (hour >= 18 || hour < 5) saludo = "🌙 ¡Feliz noche navideña!";
 
-    // Intro navideño
     let intro = 
 `┏━━━━━━━━━━━━━━━━━━━┓
 🎄 *${saludo}* 🎄
@@ -92,7 +83,6 @@ let handler = async (m, { conn, usedPrefix }) => {
 ❄️ Que las luces iluminen tu camino y las sombras te protejan ❄️
 ┗━━━━━━━━━━━━━━━━━━━┛\n`;
 
-    // Texto del menú
     let txt = intro +
       `🌐 *Canal Navideño de Shadow:*\nhttps://whatsapp.com/channel/0029Vb7GXFc9cDDW4i1gJY1m\n\n` +
       `🎅 Soy *${botNameToShow}*, el ser en las sombras ${(conn.user.jid == global.conn.user.jid ? '(Principal 🅥)' : '(Sub-Bot 🅑)')}\n` +
@@ -117,21 +107,16 @@ let handler = async (m, { conn, usedPrefix }) => {
 
     txt += `\n\n🎄✨ *Creado por Yosue uwu* ✨🎄`;
 
-    // Reacción al mensaje del usuario con emoji navideño
     await conn.sendMessage(m.chat, { react: { text: '🎅', key: m.key } });
 
-    // Miniatura
     let mediaMessage = null;
-    let thumbnailBuffer = null;
     try {
-      const res = await fetch(bannerUrl);
-      thumbnailBuffer = await res.buffer();
-      mediaMessage = await prepareWAMessageMedia({ video: { url: videoUrl }, gifPlayback: true }, { upload: conn.waUploadToServer });
-    } catch (e) {
-      console.error(e);
-    }
+      mediaMessage = await prepareWAMessageMedia(
+        { video: { url: videoUrl }, gifPlayback: true },
+        { upload: conn.waUploadToServer }
+      );
+    } catch (e) {}
 
-    // Construcción del mensaje interactivo con botón de canal
     const msg = generateWAMessageFromContent(m.chat, {
       viewOnceMessage: {
         message: {
@@ -148,8 +133,7 @@ let handler = async (m, { conn, usedPrefix }) => {
                   name: "cta_url",
                   buttonParamsJson: JSON.stringify({
                     display_text: "🌐 Canal de Shadow",
-                    url: "https://whatsapp.com/channel/0029Vb7GXFc9cDDW4i1gJY1m",
-                    merchant_url: "https://whatsapp.com/channel/0029Vb7GXFc9cDDW4i1gJY1m"
+                    url: "https://whatsapp.com/channel/0029Vb7GXFc9cDDW4i1gJY1m"
                   })
                 }
               ],
@@ -158,15 +142,7 @@ let handler = async (m, { conn, usedPrefix }) => {
             contextInfo: {
               mentionedJid: [m.sender],
               isForwarded: true,
-              forwardingScore: 9999999,
-              externalAdReply: {
-                title: "🎄 Shadow Bot - Menú Navideño 🎅",
-                body: "Accede al canal oficial",
-                thumbnail: thumbnailBuffer,
-                sourceUrl: "https://whatsapp.com/channel/0029Vb7GXFc9cDDW4i1gJY1m",
-                mediaType: 2, // tipo video
-                renderLargerThumbnail: true
-              }
+              forwardingScore: 9999999
             }
           }
         }
@@ -176,7 +152,6 @@ let handler = async (m, { conn, usedPrefix }) => {
     await conn.relayMessage(m.chat, msg.message, {});
 
   } catch (e) {
-    console.error(e);
     conn.reply(m.chat, "👻 Error en las sombras navideñas...", m);
   }
 };
