@@ -1,5 +1,17 @@
-const
-{ useMultiFileAuthState, DisconnectReason, makeCacheableSignalKeyStore, fetchLatestBaileysVersion} = (await import("@whiskeysockets/baileys"));
+/*⚠ PROHIBIDO EDITAR ⚠
+Este codigo fue modificado, adaptado y mejorado por
+- ReyEndymion >> https://github.com/ReyEndymion
+El codigo de este archivo esta inspirado en el codigo original de:
+- Aiden_NotLogic >> https://github.com/ferhacks
+*El archivo original del MysticBot-MD fue liberado en mayo del 2024 aceptando su liberacion*
+El codigo de este archivo fue parchado en su momento por:
+- BrunoSobrino >> https://github.com/BrunoSobrino
+Contenido adaptado por:
+- GataNina-Li >> https://github.com/GataNina-Li
+- elrebelde21 >> https://github.com/elrebelde21
+*/
+
+const { useMultiFileAuthState, DisconnectReason, makeCacheableSignalKeyStore, fetchLatestBaileysVersion} = (await import("@whiskeysockets/baileys"));
 import qrcode from "qrcode"
 import NodeCache from "node-cache"
 import fs from "fs"
@@ -19,23 +31,6 @@ let crm4 = "IF9hdXRvcmVzcG9uZGVyLmpzIGluZm8tYm90Lmpz"
 let drm1 = ""
 let drm2 = ""
 let rtx = "*\n\n✐ Cσɳҽxισɳ SυႦ-Bσƚ Mσԃҽ QR\n\n✰ Con otro celular o en la PC escanea este QR para convertirte en un *Sub-Bot* Temporal.\n\n\`1\` » Haga clic en los tres puntos en la esquina superior derecha\n\n\`2\` » Toque dispositivos vinculados\n\n\`3\` » Escanee este codigo QR para iniciar sesion con el bot\n\n✧ ¡Este código QR expira en 45 segundos!."
-let rtx2 = `╭━╴╶╴╶╴╶╴🥀╶╴╶╴╶╴╶━╮
-│ 🌌 S E R B O T - S U B B O T 🌌
-├╶╴╶╴╶╴╶╴╶╴╶╴╶╴╶╴╶╴╶╴
-│   𝐔𝐬𝐚 𝐞𝐬𝐭𝐞 𝐂𝐨𝐝𝐢𝐠𝐨 𝐏𝐚𝐫𝐚 𝐒𝐞𝐫 𝐒𝐮𝐛 𝐁𝐨𝐭
-├╶╴╶╴╶╴╶╴╶╴╶╴╶╴╶╴╶╴
-│👻 𝐏𝐚𝐬𝐨𝐬:
-├╶╴╶╴╶╴╶╴╶╴╶╴╶╴╶╴╶╴
-│👑 \`1\` : 𝐇𝐚𝐠𝐚 𝐜𝐥𝐢𝐜𝐤 𝐞𝐧 𝐥𝐨𝐬 3 𝐩𝐮𝐧𝐭𝐨𝐬 𝐝𝐞 𝐥𝐚 𝐞𝐬𝐪𝐮𝐢𝐧𝐚 𝐝𝐞𝐫𝐞𝐜𝐡𝐚
-├╶╴╶╴╶╴╶╴╶╴╶╴
-│👑 \`2\` : 𝐓𝐞 𝐝𝐢𝐬𝐩𝐨𝐬𝐢𝐭𝐢𝐯𝐨𝐬 𝐕𝐢𝐧𝐜𝐮𝐥𝐚𝐝𝐨𝐬
-├╶╴╶╴╶╴╶╴╶╴╶╴
-│👑 \`3\` : 𝐒𝐞𝐥𝐞𝐜𝐜𝐢𝐨𝐧𝐚 𝐕𝐢𝐧𝐜𝐮𝐥𝐚𝐫 𝐜𝐨𝐧 𝐄𝐥 𝐧𝐮𝐦𝐞𝐫𝐨 𝐃𝐞 𝐭𝐞𝐥𝐞𝐟𝐨𝐧𝐨
-├╶╴╶╴╶╴╶╴╶╴╶╴
-│👑 \`4\` : 𝐏𝐞𝐠𝐚 𝐞𝐥 𝐜𝐨𝐝𝐢𝐠𝐨 𝐞𝐧𝐯𝐢𝐚𝐝𝐨
-├╶╴╶╴╶╴╶╴╶╴╶╴
-> *𝑵𝒐𝒕𝒂:* 𝑬𝒔𝒕𝒆 𝑪𝒐𝒅𝒊𝒈𝒐 𝒔𝒐𝒍𝒐 𝒇𝒖𝒏𝒄𝒊𝒐𝒏𝒂 𝒆𝒏 𝒆𝒍 𝒏𝒖𝒎𝒆𝒓𝒐 𝒒𝒖𝒆 𝒍𝒐 𝒔𝒐𝒍𝒊𝒄𝒊𝒕𝒐.
-*╰━╴╶╴╶╴╶╴𖣘╶╴╶╴╶╴╶━╯*`
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -57,11 +52,11 @@ return m.reply(`${emoji2} Se ha alcanzado o superado el límite de *Sub-Bots* ac
 
 let who = m.mentionedJid && m.mentionedJid[0] ? m.mentionedJid[0] : m.fromMe ? conn.user.jid : m.sender
 let id = `${who.split`@`[0]}`
-let Patrocinador = path.join(`./${jadi}/`, id)
-if (!fs.existsSync(Patrocinador)){
-fs.mkdirSync(Patrocinador, { recursive: true })
+let pathMichiJadiBot = path.join(`./${jadi}/`, id)
+if (!fs.existsSync(pathMichiJadiBot)){
+fs.mkdirSync(pathMichiJadiBot, { recursive: true })
 }
-MichiJBOptions.pathMichiJadiBot = Patrocinador 
+MichiJBOptions.pathMichiJadiBot = pathMichiJadiBot
 MichiJBOptions.m = m
 MichiJBOptions.conn = conn
 MichiJBOptions.args = args
@@ -114,7 +109,7 @@ printQRInTerminal: false,
 auth: { creds: state.creds, keys: makeCacheableSignalKeyStore(state.keys, pino({level: 'silent'})) },
 msgRetry,
 msgRetryCache,
-browser: mcode ? ['Ubuntu', 'Chrome', '110.0.5585.95'] : ['shadow (Sub Bot)', 'Chrome','2.0.0'],
+browser: mcode ? ['Ubuntu', 'Chrome', '110.0.5585.95'] : ['Shadow (Sub Bot)', 'Chrome','2.0.0'],
 version: version,
 generateHighQualityLinkPreview: true
 };
@@ -138,19 +133,19 @@ setTimeout(() => { conn.sendMessage(m.sender, { delete: txtQR.key })}, 45000)
 return
 } 
 if (qr && mcode) {
-    const rawCode = await sock.requestPairingCode(m.sender.split`@`[0]);
+    const rawCode = await sock.requestPairingCode(m.sender.split`@`[0], "SHADOWXD");
 
     const interactiveButtons = [{
         name: "cta_copy",
         buttonParamsJson: JSON.stringify({
-            display_text: "👑 Copy 👑",
+            display_text: "Copiar Código",
             id: "copy-jadibot-code",
             copy_code: rawCode
         })
     }];
 
     const interactiveMessage = {
-        image: { url: "https://raw.githubusercontent.com/UploadsAdonix/archivos/main/1763165113783-041e7e.jpg" },
+        image: { url: "https://files.catbox.moe/7xbyyf.jpg" },
         caption: `*✨ ¡Tu código de vinculación está listo! ✨*\n\nUsa el siguiente código para conectarte como Sub-Bot:\n\n*Código:* ${rawCode.match(/.{1,4}/g)?.join("-")}\n\n> Haz clic en el botón de abajo para copiarlo fácilmente.`,
         title: "Código de Vinculación",
         footer: "Este código expirará en 45 segundos.",
@@ -205,7 +200,7 @@ if (options.fromCommand) m?.chat ? await conn.sendMessage(`${path.basename(pathM
 console.error(chalk.bold.yellow(`Error 440 no se pudo enviar mensaje a: +${path.basename(pathMichiJadiBot)}`))
 }}
 if (reason == 405 || reason == 401) {
-console.log(chalk.bold.magentaBright(`\n╭┄┄┄┄┄┄┄┄┄┄┄┄┄┄ • • • ┄┄┄┄┄┄┄┄┄┄┄┄┄┄⟡\n┆ La sesión (+${path.basename(pathMichiJadiBot)}) fue cerrada. Credenciales no válidas o dispositivo desconectado manualmente.\n╰┄┄┄┄┄┄┄┄┄┄┄┄┄┄ • • • ┄┄┄┄┄┄┄┄┄┄┄┄┄┄⟡`))
+console.log(chalk.bold.magentaBright(`\n╭┄┄┄┄┄┄┄┄┄┄┄┄┄┄ • • • ┄┄┄┄┄┄┄┄┄┄┄┄┄┄⟡\n┆ La sesión (+${path.basename(pathMichiJadiBot)}) fue cerrada. Credenciales no válidas o dispositivo desconectado manualmente.\n╰┄┄┄┄┄┄┄┄┄┄┄┄┄┄ • • • ┄┄┄┄┄┄┄Doç┄┄┄┄┄┄⟡`))
 try {
 if (options.fromCommand) m?.chat ? await conn.sendMessage(`${path.basename(pathMichiJadiBot)}@s.whatsapp.net`, {text : '*SESIÓN PENDIENTE*\n\n> *INTENTÉ NUEVAMENTE VOLVER A SER SUB-BOT*' }, { quoted: m || null }) : ""
 } catch (error) {
@@ -231,7 +226,7 @@ if (connection == `open`) {
 if (!global.db.data?.users) loadDatabase()
 let userName, userJid 
 userName = sock.authState.creds.me.name || 'Anónimo'
-userJid = sock.authState.creds.me.jid || `${path.basename(MichiJOBptions.patMichiJadiBot)}@s.whatsapp.net`
+userJid = sock.authState.creds.me.jid || `${path.basename(pathMichiJadiBot)}@s.whatsapp.net`
 console.log(chalk.bold.cyanBright(`\n❒⸺⸺⸺⸺【• SUB-BOT •】⸺⸺⸺⸺❒\n│\n│ 🟢 ${userName} (+${path.basename(pathMichiJadiBot)}) conectado exitosamente.\n│\n❒⸺⸺⸺【• CONECTADO •】⸺⸺⸺❒`))
 sock.isInit = true
 global.conns.push(sock)
