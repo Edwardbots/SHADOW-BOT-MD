@@ -1,26 +1,26 @@
-const handler = async (msg, { conn }) => {
-  try {
-    const chatId = msg.key.remoteJid;
-    const sender = (msg.key.participant || msg.key.remoteJid).replace(/[^0-9]/g, '');
-    const isGroup = chatId.endsWith('@g.us');
+import moment from "moment-timezone"
 
-    await conn.sendMessage(chatId, { react: { text: '🎄', key: msg.key } });
+let handler = async (m, { conn, text }) => {
+  try {
+    const chatId = m.chat
+    const isGroup = chatId.endsWith('@g.us')
+
+    await conn.sendMessage(chatId, { react: { text: '🎄', key: m.key } })
 
     if (!isGroup) {
       await conn.sendMessage(chatId, {
         text: `❒ Este comando solo puede ejecutarse dentro de grupos.`,
-        quoted: msg
-      });
-      return;
+        quoted: m
+      })
+      return
     }
 
-    const metadata = await conn.groupMetadata(chatId);
-    const participants = metadata.participants;
-    const mentionIds = participants.map(p => p.id);
+    const metadata = await conn.groupMetadata(chatId)
+    const participants = metadata.participants
+    const mentionIds = participants.map(p => p.id)
 
-    const messageText = msg.message?.conversation || msg.message?.extendedTextMessage?.text || '';
-    const args = messageText.trim().split(' ').slice(1);
-    const extraMsg = args.join(' ');
+    const args = text.trim().split(' ').slice(1)
+    const extraMsg = args.join(' ')
 
     let texto = 
 `┏━━━━━━━━━━━━━━━━━━━┓
@@ -28,35 +28,38 @@ const handler = async (msg, { conn }) => {
 ┗━━━━━━━━━━━━━━━━━━━┛
 
 ✐ Grupo: *${metadata.subject}*
-ⴵ Miembros: *${participants.length}*`;
+ⴵ Miembros: *${participants.length}*`
 
-    if (extraMsg) texto += `\n✰ Mensaje: *${extraMsg}*`;
+    if (extraMsg) texto += `\n✰ Mensaje: *${extraMsg}*`
 
-    texto += `\n\n❒ Menciones:\n`;
-    texto += participants.map(p => `» @${p.id.split('@')[0]}`).join('\n');
+    texto += `\n\n❒ Menciones:\n`
+    texto += participants.map(p => `» @${p.id.split('@')[0]}`).join('\n')
 
-    texto += `\n\n❄️ Versión: *${vs}*\n`;
-    texto += `\n✨ "Las sombras celebran bajo la nieve... ¿Quién más desea ser invocado en esta noche eterna?" ✨`;
+    const vs = "1.0.0"
+    texto += `\n\n❄️ Versión: *${vs}*`
+    texto += `\n✨ "Las sombras celebran bajo la nieve... ¿Quién más desea ser invocado en esta noche eterna?" ✨`
 
+    // 👇 Aquí enviamos imagen + caption con menciones
     await conn.sendMessage(chatId, {
-      text: texto,
+      image: { url: 'https://files.catbox.moe/xr2m6u.jpg' }, // tu imagen personalizada
+      caption: texto,
       mentions: mentionIds
-    }, { quoted: msg });
+    }, { quoted: m })
 
   } catch (error) {
-    console.error('❌ Error en el comando tagall:', error);
-    await conn.sendMessage(msg.key.remoteJid, {
+    console.error('❌ Error en el comando tagall:', error)
+    await conn.sendMessage(m.chat, {
       text: `❒ Ocurrió un error al ejecutar el comando *tagall*.`,
-      quoted: msg
-    });
+      quoted: m
+    })
   }
-};
+}
 
-handler.tags = ['grupo'];
-handler.help = ['invocar'];
-// ✅ Ahora funciona con y sin prefijo
-handler.command = /^(tagall|invocar|todos)$/i;
-handler.group = true;
-handler.admin = true;
+handler.help = ['invocar']
+handler.tags = ['grupo']
+// 👇 Usa array en vez de regex
+handler.command = ['tagall', 'invocar', 'todos']
+handler.group = true
+handler.admin = true
 
-export default handler;
+export default handler
