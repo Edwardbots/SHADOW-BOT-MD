@@ -1,10 +1,8 @@
 import yts from "yt-search"
 import fetch from "node-fetch"
 
-const handler = async (m, { conn, text, command }) => {
-  if (!text) return m.reply(`🎄 *Shadow — Invocación navideña*
-
-✨ Pronuncia el nombre del video o entrega el enlace de YouTube.`)
+const handler = async (m, { conn, text }) => {
+  if (!text) return m.reply("Escribe el nombre del video o un enlace de YouTube.")
 
   await m.react("❄️")
 
@@ -18,12 +16,7 @@ const handler = async (m, { conn, text, command }) => {
 
     if (!text.startsWith("https://")) {
       const res = await yts(text)
-      if (!res?.videos?.length) {
-        return m.reply(`🎄 *Shadow — Buscador navideño*
-
-🎅 Nada fue encontrado…`)
-      }
-
+      if (!res?.videos?.length) return m.reply("No encontré nada.")
       const video = res.videos[0]
       title = video.title
       authorName = video.author?.name
@@ -33,71 +26,76 @@ const handler = async (m, { conn, text, command }) => {
       thumbnail = video.thumbnail
     }
 
-    const isAudio = ["play", "playaudio", "ytmp3"].includes(command)
-    const isVideo = ["play2", "playvid", "ytv", "ytmp4"].includes(command)
+    const caption = `🎄 Shadow — Selección navideña
 
-    if (isAudio) {
-      await downloadMedia(conn, m, url, title, thumbnail, "mp3")
-    } else if (isVideo) {
-      await downloadMedia(conn, m, url, title, thumbnail, "mp4")
-    } else {
-      await m.reply(`🎄 *Shadow — Análisis navideño*
+✨ Título: ${title}
+🔔 Canal: ${authorName}
+🎬 Duración: ${durationTimestamp}
+👁️ Vistas: ${views}
 
-✨ *Título:* ${title}
-🔔 *Canal:* ${authorName}
-🎬 *Duración:* ${durationTimestamp}
-👁️ *Vistas:* ${views}
+🎁 Elige qué deseas descargar:`
 
-Comandos disponibles:
-• *.ytmp3 ${url}*
-• *.ytmp4 ${url}*`)
-    }
+    const buttons = [
+      { buttonId: `shadowaudio ${url}`, buttonText: { displayText: "🎧 Descargar Audio" }, type: 1 },
+      { buttonId: `shadowvideo ${url}`, buttonText: { displayText: "🎥 Descargar Video" }, type: 1 }
+    ]
 
-  } catch (error) {
-    await m.reply(`🎄 *Shadow — Error en la magia*
+    await conn.sendMessage(
+      m.chat,
+      {
+        image: { url: thumbnail },
+        caption,
+        footer: "Shadow — Descargas",
+        buttons,
+        headerType: 4
+      },
+      { quoted: m }
+    )
 
-❌ ${error.message}`)
-    await m.react("⚠️")
+    await m.react("✨")
+
+  } catch (e) {
+    m.reply("Error: " + e.message)
+    m.react("⚠️")
   }
 }
 
-const downloadMedia = async (conn, m, url, title, thumbnail, type) => {
+handler.before = async (m, { conn }) => {
+  const selected = m?.message?.buttonsResponseMessage?.selectedButtonId
+  if (!selected) return
+
+  const parts = selected.split(" ")
+  const cmd = parts.shift()
+  const url = parts.join(" ")
+
+  if (cmd === "shadowaudio") {
+    return downloadMedia(conn, m, url, "mp3")
+  }
+
+  if (cmd === "shadowvideo") {
+    return downloadMedia(conn, m, url, "mp4")
+  }
+}
+
+const downloadMedia = async (conn, m, url, type) => {
   try {
-    const cleanTitle = cleanName(title) + (type === "mp3" ? ".mp3" : ".mp4")
+    const msg = type === "mp3"
+      ? "🎄 Shadow — Descargando audio..."
+      : "🎄 Shadow — Descargando video..."
 
-    const msg = `🎄 *Shadow — Descarga en curso*
-
-✨ *Título:* ${title}
-🎁 Preparando tu ${type === "mp3" ? "audio navideño" : "video festivo"}...`
-
-    let sent
-    if (thumbnail) {
-      sent = await conn.sendMessage(
-        m.chat,
-        { image: { url: thumbnail }, caption: msg },
-        { quoted: m }
-      )
-    } else {
-      sent = await conn.sendMessage(
-        m.chat,
-        { text: msg },
-        { quoted: m }
-      )
-    }
+    const sent = await conn.sendMessage(m.chat, { text: msg }, { quoted: m })
 
     const apiUrl = type === "mp3"
       ? `https://api-adonix.ultraplus.click/download/ytaudio?url=${encodeURIComponent(url)}&apikey=AdonixKeyuxuacv6765`
       : `https://api-adonix.ultraplus.click/download/ytvideo?url=${encodeURIComponent(url)}&apikey=AdonixKeyuxuacv6765`
 
-    const response = await fetch(apiUrl)
-    const data = await response.json()
+    const r = await fetch(apiUrl)
+    const data = await r.json()
 
-    if (!data?.status || !data?.data?.url) {
-      throw new Error("La API no devolvió un archivo válido.")
-    }
+    if (!data?.status || !data?.data?.url) return m.reply("No se pudo descargar el archivo.")
 
     const fileUrl = data.data.url
-    const fileTitle = data.data.title || title
+    const fileTitle = cleanName(data.data.title || "video")
 
     if (type === "mp3") {
       await conn.sendMessage(
@@ -105,7 +103,7 @@ const downloadMedia = async (conn, m, url, title, thumbnail, type) => {
         {
           audio: { url: fileUrl },
           mimetype: "audio/mpeg",
-          fileName: cleanTitle
+          fileName: fileTitle + ".mp3"
         },
         { quoted: m }
       )
@@ -115,7 +113,7 @@ const downloadMedia = async (conn, m, url, title, thumbnail, type) => {
         {
           video: { url: fileUrl },
           mimetype: "video/mp4",
-          fileName: cleanTitle
+          fileName: fileTitle + ".mp4"
         },
         { quoted: m }
       )
@@ -124,27 +122,22 @@ const downloadMedia = async (conn, m, url, title, thumbnail, type) => {
     await conn.sendMessage(
       m.chat,
       {
-        text: `🎄 *Shadow — Operación completada*
-
-✨ *Título:* ${fileTitle}
-🎁 Entregado con magia navideña.`,
+        text: `🎄 Shadow — Completado\n\n✨ Título: ${fileTitle}`,
         edit: sent.key
       }
     )
 
     await m.react("✅")
 
-  } catch (error) {
-    await m.reply(`🎄 *Shadow — Falla en la entrega*
-
-❌ ${error.message}`)
-    await m.react("❌")
+  } catch (e) {
+    m.reply("Error: " + e.message)
+    m.react("❌")
   }
 }
 
 const cleanName = (name) => name.replace(/[^\w\s-_.]/gi, "").substring(0, 50)
 
-handler.command = handler.help = ["play", "playaudio", "ytmp3", "play2", "playvid", "ytv", "ytmp4", "yt"]
+handler.command = ["play", "yt", "ytsearch"]
 handler.tags = ["descargas"]
 handler.register = true
 
