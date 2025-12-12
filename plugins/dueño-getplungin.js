@@ -8,7 +8,7 @@ const handler = async (m, { conn, isROwner, usedPrefix, command, text }) => {
   if (!text) {
     return conn.reply(
       m.chat,
-      `📂 Ingrese el nombre de algún plugin (archivo) existente*\n\n*—◉ Ejemplo*\n*◉ ${usedPrefix + command} info-infobot*\n\n*—◉ Lista de plugins (archivos) existentes:*\n*◉* ${ar1.map((v) => ' ' + v).join`\n*◉*`}`,
+      `📂 Ingrese el nombre de algún plugin (archivo) existente*\n\n*—◉ Ejemplo:*\n*◉ ${usedPrefix + command} info-infobot*\n\n*—◉ Lista de plugins disponibles:*\n*◉* ${ar1.map((v) => ' ' + v).join`\n*◉*`}`,
       m
     );
   }
@@ -16,7 +16,7 @@ const handler = async (m, { conn, isROwner, usedPrefix, command, text }) => {
   if (!ar1.includes(text)) {
     return conn.reply(
       m.chat,
-      `❌ No se encontró ningún plugin (archivo) llamado "${text}", ingrese alguno existente*\n\n*==================================*\n\n*—◉ Lista de plugins (archivos) existentes:*\n*◉* ${ar1.map((v) => ' ' + v).join`\n*◉*`}`,
+      `❌ No se encontró ningún plugin llamado "${text}".\n\n*—◉ Lista de plugins disponibles:*\n*◉* ${ar1.map((v) => ' ' + v).join`\n*◉*`}`,
       m
     );
   }
@@ -27,7 +27,7 @@ const handler = async (m, { conn, isROwner, usedPrefix, command, text }) => {
       return conn.reply(m.chat, `⚠️ El archivo ${text}.js no existe en la carpeta plugins.`, m);
     }
 
-    // 1) Enviar el archivo .js directamente
+    // 1. Enviar el código como archivo .js
     await conn.sendMessage(
       m.chat,
       {
@@ -38,7 +38,7 @@ const handler = async (m, { conn, isROwner, usedPrefix, command, text }) => {
       { quoted: m }
     );
 
-    // 2) Crear ZIP y esperar a que termine
+    // 2. Crear ZIP temporal con el plugin
     const zipPath = `./plugins/${text}.zip`;
     await new Promise((resolve, reject) => {
       const output = fs.createWriteStream(zipPath);
@@ -52,7 +52,7 @@ const handler = async (m, { conn, isROwner, usedPrefix, command, text }) => {
       archive.finalize();
     });
 
-    // 3) Enviar el ZIP y borrarlo
+    // 3. Enviar el ZIP
     await conn.sendMessage(
       m.chat,
       {
@@ -63,9 +63,11 @@ const handler = async (m, { conn, isROwner, usedPrefix, command, text }) => {
       { quoted: m }
     );
 
+    // 4. Borrar el ZIP temporal
     fs.unlinkSync(zipPath);
+
   } catch (e) {
-    conn.reply(m.chat, `❌ Error al obtener el plugin: ${e.message}`, m);
+    conn.reply(m.chat, `❌ Error al procesar el plugin: ${e.message}`, m);
   }
 };
 
