@@ -27,7 +27,7 @@ const handler = async (m, { conn, isROwner, usedPrefix, command, text }) => {
       return conn.reply(m.chat, `⚠️ El archivo ${text}.js no existe en la carpeta plugins.`, m);
     }
 
-    // Enviar el archivo .js directamente
+    // 1) Enviar el archivo .js directamente
     await conn.sendMessage(
       m.chat,
       {
@@ -38,28 +38,32 @@ const handler = async (m, { conn, isROwner, usedPrefix, command, text }) => {
       { quoted: m }
     );
 
-    // Crear un ZIP con el archivo
+    // 2) Crear ZIP y esperar a que termine
     const zipPath = `./plugins/${text}.zip`;
-    const output = fs.createWriteStream(zipPath);
-    const archive = archiver('zip', { zlib: { level: 9 } });
+    await new Promise((resolve, reject) => {
+      const output = fs.createWriteStream(zipPath);
+      const archive = archiver('zip', { zlib: { level: 9 } });
 
-    archive.pipe(output);
-    archive.file(filePath, { name: `${text}.js` });
-    await archive.finalize();
+      output.on('close', resolve);
+      archive.on('error', reject);
 
-    output.on('close', async () => {
-      await conn.sendMessage(
-        m.chat,
-        {
-          document: fs.readFileSync(zipPath),
-          mimetype: 'application/zip',
-          fileName: `${text}.zip`
-        },
-        { quoted: m }
-      );
-      fs.unlinkSync(zipPath); // borrar el zip temporal
+      archive.pipe(output);
+      archive.file(filePath, { name: `${text}.js` });
+      archive.finalize();
     });
 
+    // 3) Enviar el ZIP y borrarlo
+    await conn.sendMessage(
+      m.chat,
+      {
+        document: fs.readFileSync(zipPath),
+        mimetype: 'application/zip',
+        fileName: `${text}.zip`
+      },
+      { quoted: m }
+    );
+
+    fs.unlinkSync(zipPath);
   } catch (e) {
     conn.reply(m.chat, `❌ Error al obtener el plugin: ${e.message}`, m);
   }
