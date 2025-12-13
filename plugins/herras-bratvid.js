@@ -1,4 +1,4 @@
-// Codigo de @WILKER-OFC y no quites creditos   
+// Codigo de @WILKER-OFC y no quites creditos
 import fs from 'fs'
 import path from 'path'
 import crypto from 'crypto'
@@ -10,7 +10,7 @@ import webp from 'node-webpmux'
 const tmp = path.join(process.cwd(), 'tmp')
 if (!fs.existsSync(tmp)) fs.mkdirSync(tmp)
 
-async(webpSticker, packname, author, categories = [''], extra = {}) {
+async function addExif(webpSticker, packname, author, categories = [''], extra = {}) {
   const img = new webp.Image()
   const stickerPackId = crypto.randomBytes(32).toString('hex')
   const json = {
@@ -35,7 +35,7 @@ async(webpSticker, packname, author, categories = [''], extra = {}) {
 
 async function sticker(img, url, packname, author) {
   if (url) {
-    let res = await fetch(url)
+    const res = await fetch(url)
     if (res.status !== 200) throw await res.text()
     img = await res.buffer()
   }
@@ -53,7 +53,7 @@ async function sticker(img, url, packname, author) {
 
     ff.addOutputOptions([
       '-vcodec', 'libwebp', '-vf',
-      "scale='min(512,iw)':min'(512,ih)':forceoriginalaspectratio=decrease,fps=15, pad=512:512:-1:-1:color=white@0.0, split [a][b]; [a] palettegen=reservetransparent=on:transparency_color=ffffff [p]; [b][p] paletteuse"
+      "scale='min(512,iw)':'min(512,ih)':force_original_aspect_ratio=decrease,fps=15,pad=512:512:-1:-1:color=white@0.0,split[a][b];[a]palettegen=reservetransparent=on:transparency_color=ffffff[p];[b][p]paletteuse"
     ])
       .toFormat('webp')
       .save(outFile)
@@ -68,8 +68,8 @@ async function sticker(img, url, packname, author) {
   return await addExif(buffer, packname, author)
 }
 
-// Nuevo comando bratv
-const bratv = async (m, { conn, text }) => {
+// Handler bratv/bratvid
+const handler = async (m, { conn, text }) => {
   if (!text) {
     return conn.sendMessage(m.chat, { text: '✦ Ingresa un texto para generar el vídeo brat' }, { quoted: m })
   }
@@ -101,8 +101,9 @@ const bratv = async (m, { conn, text }) => {
   }
 }
 
-bratv.help = ['bratv <texto>']
-bratv.tags = ['sticker']
-bratv.command = ['bratv']
+handler.help = ['bratv <texto>', 'bratvid <texto>']
+handler.tags = ['sticker']
+// Regex anclado y con alias para que el handler se registre correctamente
+handler.command = /^(bratv|bratvid)$/i
 
-export default bratv
+export default handler
