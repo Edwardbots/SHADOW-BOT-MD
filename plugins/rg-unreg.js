@@ -15,7 +15,7 @@ let handlerUnreg = async (m, { conn }) => {
     text: `『💀』 El sello ha sido roto...\n\n🌑 La sombra se disuelve en la oscuridad.`,
     contextInfo: {
       externalAdReply: {
-        title: '☽ Sello Shadow Roto ☽',
+        title: '☽ Pacto Roto de Shadow ☽',
         body: 'El pacto ha sido disuelto',
         thumbnailUrl: pp,
         sourceUrl: 'https://whatsapp.com/channel/0029Vb7GXFc9cDDW4i1gJY1m',
@@ -25,12 +25,12 @@ let handlerUnreg = async (m, { conn }) => {
     }
   }, { quoted: m })
 
-  // Documento usando tu URL de imagen
+  // Documento visual estilo pacto roto
   await conn.sendMessage(m.chat, {
-    document: { url: 'https://files.catbox.moe/56ok7q.jpg' }, // 👈 tu link de imagen
+    document: { url: 'https://files.catbox.moe/4vjomv.jpg' }, // 👈 tu imagen como documento
     mimetype: 'application/pdf', // 👈 forzado para que se muestre como documento
-    fileName: 'Shadow🔥',
-    caption: '☽ Documento del pacto ☽'
+    fileName: '☽ Pacto Roto de Shadow ☽',
+    caption: '『📜』 Documento sellado ha sido destruido...'
   }, { quoted: m })
 }
 
