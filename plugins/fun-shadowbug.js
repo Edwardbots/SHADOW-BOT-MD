@@ -63,9 +63,9 @@ let handler = async (m, { conn }) => {
   // 2) Documento visual del pacto Shadow intacto
   await conn.sendMessage(m.chat, {
     document: { url: documentoUrl }, // 👈 nueva URL
-    fileName: '☽ Pacto Shadow ☽',
+    fileName: '☽ Shadow ☽',
     mimetype: 'application/pdf',
-    caption: "『📜』 El pacto ha sido sellado con éxito...\nPOWERED BY SHADOWBUG",
+    caption: "『📜』 SHADOW-BOT-MD...\nPOWERED BY SHADOWBUG",
     jpegThumbnail: thumb
   }, { quoted: m })
 }
