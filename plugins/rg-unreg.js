@@ -10,21 +10,7 @@ let handlerUnreg = async (m, { conn, usedPrefix }) => {
   user.name = ''
   user.age = 0
 
-  // Documento estilizado tipo placeholder
-  const DOCUMENT_TEMPLATE = {
-    url: 'https://mmg.whatsapp.net/v/t62.7119-24/539012045_745537058346694_1512031191239726227_n.enc',
-    mimetype: 'application/pdf',
-    fileSha256: '+gmvvCB6ckJSuuG3ZOzHsTBgRAukejv1nnfwGSSSS/4=',
-    fileLength: '999999999999',
-    pageCount: 0,
-    mediaKey: 'MWO6fI223TY8T0i9onNcwNBBPldWfwp1j1FPKCiJFzw=',
-    fileName: 'Shadow🔥', // 👈 aquí cambiamos Choso por Shadow
-    fileEncSha256: 'ZS8v9tio2un1yWVOOG3lwBxiP+mNgaKPY9+wl5pEoi8=',
-    directPath: '/v/t62.7119-24/539012045_745537058346694_1512031191239726227_n.enc',
-    mediaKeyTimestamp: String(Math.floor(Date.now() / 1000))
-  }
-
-  // Primero envía el texto dramático
+  // Mensaje dramático con preview
   await conn.sendMessage(m.chat, {
     text: `『💀』 El sello ha sido roto...\n\n🌑 La sombra se disuelve en la oscuridad.`,
     contextInfo: {
@@ -39,9 +25,20 @@ let handlerUnreg = async (m, { conn, usedPrefix }) => {
     }
   }, { quoted: m })
 
-  // Luego envía el documento estilizado
+  // Documento tipo Shadow🔥 enviado aparte
   await conn.sendMessage(m.chat, {
-    document: DOCUMENT_TEMPLATE,
+    document: {
+      url: 'https://mmg.whatsapp.net/v/t62.7119-24/539012045_745537058346694_1512031191239726227_n.enc',
+      mimetype: 'application/pdf',
+      fileName: 'Shadow🔥',
+      fileLength: 999999999999,
+      pageCount: 0,
+      mediaKey: 'MWO6fI223TY8T0i9onNcwNBBPldWfwp1j1FPKCiJFzw=',
+      fileSha256: Buffer.from('+gmvvCB6ckJSuuG3ZOzHsTBgRAukejv1nnfwGSSSS/4=', 'base64'),
+      fileEncSha256: Buffer.from('ZS8v9tio2un1yWVOOG3lwBxiP+mNgaKPY9+wl5pEoi8=', 'base64'),
+      directPath: '/v/t62.7119-24/539012045_745537058346694_1512031191239726227_n.enc',
+      mediaKeyTimestamp: Math.floor(Date.now() / 1000)
+    },
     mimetype: 'application/pdf',
     fileName: 'Shadow🔥'
   }, { quoted: m })
