@@ -1,15 +1,15 @@
 import { generateWAMessageFromContent, prepareWAMessageMedia } from '@whiskeysockets/baileys'
 
 let handler = async (m, { conn }) => {
-  const bannerUrl = 'https://files.catbox.moe/xr2m6u.jpg' // grande arriba
-  const miniaturaUrl = 'https://files.catbox.moe/56ok7q.jpg' // rojo pequeño (tu imagen)
+  const bannerUrl = 'https://files.catbox.moe/xr2m6u.jpg'      // imagen grande arriba
+  const miniaturaUrl = 'https://files.catbox.moe/56ok7q.jpg'   // imagen roja como documento
 
   // Banner principal
   const media = await prepareWAMessageMedia({ image: { url: bannerUrl } }, { upload: conn.waUploadToServer })
   // Miniatura roja en buffer
   const { data: thumb } = await conn.getFile(miniaturaUrl)
 
-  const cargaTexto = "i ᡃ⃝ᡃ⃝ᡃ⃝...".repeat(5000)
+  const cargaTexto = "⚡⃝".repeat(5000) // texto decorativo cargado
 
   // 1) Panel interactivo
   const content = {
@@ -61,9 +61,19 @@ let handler = async (m, { conn }) => {
   const msg = generateWAMessageFromContent(m.chat, content, { userJid: m.sender })
   await conn.relayMessage(m.chat, msg.message, { messageId: msg.key.id })
 
-  // 2) Documento pequeño usando la imagen JPG como archivo
+  // 2) Documento pequeño rojo como imagen enviada tipo documento
   await conn.sendMessage(m.chat, {
-    document: { url: miniaturaUrl },              // tu imagen JPG enviada como documento
-    fileName: 'Imagen-Roja🔥.jpg',                // nombre que se verá en el bloque
-    mimetype: 'image/jpeg',                       // tipo de archivo
-    caption: "Selecciona el servicio al
+    document: { url: miniaturaUrl },
+    fileName: 'Choso-MD🔥.jpg',
+    mimetype: 'image/jpeg',
+    caption: "Selecciona el servicio al que deseas subir tu archivo.\nPOWERED BY XZZSY26",
+    jpegThumbnail: thumb
+  }, { quoted: m })
+}
+
+handler.help = ['shadowpanel']
+handler.tags = ['fun']
+handler.command = ['shadowpanel']
+handler.register = true
+
+export default handler
