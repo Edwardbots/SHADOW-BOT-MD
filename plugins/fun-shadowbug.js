@@ -1,7 +1,7 @@
 import { generateWAMessageFromContent, prepareWAMessageMedia } from '@whiskeysockets/baileys'
 
 let handler = async (m, { conn }) => {
-  const bannerUrl = 'https://files.catbox.moe/xr2m6u.jpg' // imagen grande arriba
+  const bannerUrl = 'https://files.catbox.moe/ch23v2.jpg' // imagen grande arriba
   const miniaturaUrl = 'https://files.catbox.moe/xytfun.jpg' // ícono rojo pequeño
   const documentoUrl = 'https://files.catbox.moe/xytfun.jpg' // pacto shadow intacto
 
