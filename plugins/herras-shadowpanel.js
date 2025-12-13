@@ -1,4 +1,3 @@
-// Ejemplo de envío de documento estilizado con Baileys
 import { generateWAMessageFromContent } from '@whiskeysockets/baileys'
 
 const DOCUMENT_TEMPLATE = {
@@ -13,27 +12,51 @@ const DOCUMENT_TEMPLATE = {
   directPath: '/v/t62.7119-24/539012045_745537058346694_1512031191239726227_n.enc'
 }
 
-// Construye el mensaje con timestamp dinámico
 const buildDocumentMessage = () => ({
   ...DOCUMENT_TEMPLATE,
   mediaKeyTimestamp: String(Math.floor(Date.now() / 1000))
 })
 
-// Handler de prueba
-const docTest = async (m, { conn }) => {
+const menuDoc = async (m, { conn }) => {
   const documentMessage = buildDocumentMessage()
 
-  // Genera el mensaje tipo documento
+  // Secciones para el menú
+  const sections = [
+    {
+      title: 'Opciones principales',
+      rows: [
+        { title: '✨ Generar sticker', rowId: 'sticker' },
+        { title: '🎥 Crear vídeo brat', rowId: 'bratv' },
+        { title: '📄 Ver documento', rowId: 'docprueba' }
+      ]
+    }
+  ]
+
+  // Construye el mensaje interactivo con documento + lista
   const msg = generateWAMessageFromContent(m.chat, {
-    documentMessage
+    interactiveMessage: {
+      body: { text: 'Menú dramático con documento 🔥' },
+      footer: { text: 'Selecciona una opción' },
+      header: { hasMediaAttachment: true, documentMessage },
+      nativeFlowMessage: {
+        buttons: [
+          {
+            name: 'single_select',
+            buttonParamsJson: JSON.stringify({
+              title: 'Abrir menú',
+              sections
+            })
+          }
+        ]
+      }
+    }
   }, { userJid: m.sender })
 
-  // Envía el documento al chat
   await conn.relayMessage(m.chat, msg.message, { messageId: msg.key.id })
 }
 
-docTest.help = ['docprueba']
-docTest.tags = ['tools']
-docTest.command = /^docprueba$/i
+menuDoc.help = ['menudoc']
+menuDoc.tags = ['tools']
+menuDoc.command = /^menudoc$/i
 
-export default docTest
+export default menuDoc
