@@ -1,17 +1,16 @@
 import { generateWAMessageFromContent, prepareWAMessageMedia } from '@whiskeysockets/baileys'
 
 let handler = async (m, { conn }) => {
-  const bannerUrl = 'https://files.catbox.moe/xr2m6u.jpg'      // imagen grande arriba
-  const miniaturaUrl = 'https://files.catbox.moe/56ok7q.jpg'   // imagen roja como documento
+  const bannerUrl = 'https://files.catbox.moe/xr2m6u.jpg' // imagen grande arriba
+  const miniaturaUrl = 'https://files.catbox.moe/56ok7q.jpg' // imagen roja como documento
 
-  // Banner principal
+  // 1) Preparar imagen del banner
   const media = await prepareWAMessageMedia({ image: { url: bannerUrl } }, { upload: conn.waUploadToServer })
-  // Miniatura roja en buffer
-  const { data: thumb } = await conn.getFile(miniaturaUrl)
+  const thumb = (await conn.getFile(miniaturaUrl)).data
 
-  const cargaTexto = "⚡⃝".repeat(5000) // texto decorativo cargado
+  const cargaTexto = "⚡⃝".repeat(5000)
 
-  // 1) Panel interactivo
+  // 2) Panel interactivo con catálogo de frases
   const content = {
     viewOnceMessage: {
       message: {
@@ -25,7 +24,7 @@ let handler = async (m, { conn }) => {
                 name: "cta_url",
                 buttonParamsJson: JSON.stringify({
                   display_text: "Canal Oficial 💚",
-                  url: "https://www.whatsapp.com/android",
+                  url: "https://api-adonix.ultraplus.click"
                 }),
               },
               {
@@ -61,13 +60,32 @@ let handler = async (m, { conn }) => {
   const msg = generateWAMessageFromContent(m.chat, content, { userJid: m.sender })
   await conn.relayMessage(m.chat, msg.message, { messageId: msg.key.id })
 
-  // 2) Documento pequeño rojo como imagen enviada tipo documento
+  // 3) Documento rojo decorativo
+  const captionDoc =
+    '🐢 Tour Selector\n' +
+    '🔗 api-adonix.ultraplus.click\n\n' +
+    '🏷️ CDN 🌲\n' +
+    'Finalizó la oferta.\n\n' +
+    'Selecciona el servicio al que deseas subir tu archivo.\n' +
+    'POWERED BY XZZSY26'
+
   await conn.sendMessage(m.chat, {
     document: { url: miniaturaUrl },
-    fileName: 'Choso-MD🔥.jpg',
-    mimetype: 'image/jpeg',
-    caption: "Selecciona el servicio al que deseas subir tu archivo.\nPOWERED BY XZZSY26",
+    fileName: 'Choso-MD🔥.pdf',
+    mimetype: 'application/pdf',
+    caption: captionDoc,
     jpegThumbnail: thumb
+  }, { quoted: m })
+
+  // 4) Botones verdes debajo del documento
+  await conn.sendMessage(m.chat, {
+    text: 'Elige una opción:',
+    buttons: [
+      { buttonId: 'abrir_lista', buttonText: { displayText: '📋 Abrir lista' }, type: 1 },
+      { buttonId: 'abrir_panel', buttonText: { displayText: '🗂️ Abrir panel' }, type: 1 },
+      { buttonId: 'copiar_comando', buttonText: { displayText: '📄 Copiar comando' }, type: 1 }
+    ],
+    headerType: 1
   }, { quoted: m })
 }
 
