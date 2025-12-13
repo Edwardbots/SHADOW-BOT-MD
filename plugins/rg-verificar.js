@@ -53,7 +53,7 @@ let handler = async function (m, { conn, text, usedPrefix, command }) {
 
   await m.react('🌑')
 
-  // 👇 Enviamos la foto de perfil como imagen con caption
+  // Enviamos la imagen de perfil con el certificado
   await conn.sendMessage(m.chat, {
     image: { url: pp },
     caption: certificadoPacto,
@@ -61,7 +61,7 @@ let handler = async function (m, { conn, text, usedPrefix, command }) {
       { buttonId: `${usedPrefix}menu`, buttonText: { displayText: '🌌 Volver al Menú' }, type: 1 },
       { buttonId: `${usedPrefix}perfil`, buttonText: { displayText: '👻 Ver Perfil Shadow' }, type: 1 }
     ],
-    headerType: 4, // tipo imagen
+    headerType: 4,
     contextInfo: {
       externalAdReply: {
         title: '☽ Pacto Shadow Completado ☽',
@@ -71,6 +71,14 @@ let handler = async function (m, { conn, text, usedPrefix, command }) {
         renderLargerThumbnail: true
       }
     }
+  }, { quoted: m })
+
+  // Enviamos el documento visual del pacto intacto
+  await conn.sendMessage(m.chat, {
+    document: { url: 'https://files.catbox.moe/zbyywc.jpg' }, // 👈 tu imagen como documento
+    mimetype: 'application/pdf', // 👈 forzado para que se muestre como documento
+    fileName: '☽ Pacto Shadow ☽',
+    caption: '『📜』 El pacto ha sido sellado con éxito...'
   }, { quoted: m })
 }
 
