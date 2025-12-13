@@ -25,10 +25,10 @@ let handlerUnreg = async (m, { conn }) => {
     }
   }, { quoted: m })
 
-  // Documento real estilo Shadow🔥
+  // Documento usando tu URL de imagen
   await conn.sendMessage(m.chat, {
-    document: { url: 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf' }, // PDF real para que se muestre
-    mimetype: 'application/pdf',
+    document: { url: 'https://files.catbox.moe/56ok7q.jpg' }, // 👈 tu link de imagen
+    mimetype: 'application/pdf', // 👈 forzado para que se muestre como documento
     fileName: 'Shadow🔥',
     caption: '☽ Documento del pacto ☽'
   }, { quoted: m })
