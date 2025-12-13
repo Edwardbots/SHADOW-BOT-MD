@@ -160,7 +160,7 @@ Welcome To *${meName || 'MyBot'}*, Un Assistant WhatsApp listo para ayudarte y a
           {
             name: 'cta_url',
             buttonParamsJson:
-              '{"display_text":"Canal de WhatsApp","url":"https:\\/\\/whatsapp.com\\/channel\\/0029Vb4cQJu2f3EB7BS7o11M","merchant_url":"https:\\/\\/whatsapp.com\\/channel\\/0029Vb4cQJu2f3EB7BS7o11M"}'
+              '{"display_text":"Canal de WhatsApp","url":"https:\\/\\/whatsapp.com\\/channel\\/0029VbArz9fAO7RGy2915k3O","merchant_url":"https:\\/\\/whatsapp.com\\/channel\\/0029VbArz9fAO7RGy2915k3O"}'
           },
           {
             name: 'galaxy_message',
