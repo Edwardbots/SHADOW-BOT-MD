@@ -1,4 +1,3 @@
-// Codigo de @WILKER-OFC y no quites creditos
 import fs from 'fs'
 import path from 'path'
 import crypto from 'crypto'
