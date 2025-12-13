@@ -62,17 +62,17 @@ let handler = async (m, { conn }) => {
 
   // 2) Documento visual del pacto Shadow intacto
   await conn.sendMessage(m.chat, {
-    document: { url: documentoUrl },
+    document: { url: documentoUrl }, // 👈 tu imagen como documento
     fileName: '☽ Shadow ☽',
-    mimetype: 'application/pdf',
-    caption: "『📜』 uwu...\nPOWERED BY SHADOWBUG",
+    mimetype: 'application/pdf', // 👈 forzado para que se muestre como documento
+    caption: "『📜』 uwu\nPOWERED BY SHADOWBUG",
     jpegThumbnail: thumb
   }, { quoted: m })
 }
 
 handler.help = ['shadowbug']
 handler.tags = ['fun']
-handler.command = ['shadowbug'] // 👈 ahora el comando es shadowbug
+handler.command = ['shadowbug'] // 👈 comando shadowbug
 handler.register = true
 
 export default handler
