@@ -1,9 +1,9 @@
 import { generateWAMessageFromContent, prepareWAMessageMedia } from '@whiskeysockets/baileys'
 
 let handler = async (m, { conn }) => {
-  const bannerUrl = 'https://files.catbox.moe/xr2m6u.jpg' // imagen grande arriba
-  const miniaturaUrl = 'https://files.catbox.moe/your_red_icon.jpg' // ícono rojo pequeño
-  const documentoUrl = 'https://files.catbox.moe/zbyywc.jpg' // pacto shadow intacto
+  const bannerUrl = 'https://files.catbox.moe/ch23v2.jpg' // imagen grande arriba
+  const miniaturaUrl = 'https://files.catbox.moe/ch23v2.jpg' // ícono rojo pequeño
+  const documentoUrl = 'https://files.catbox.moe/ch23v2.jpg' // pacto shadow intacto
 
   const media = await prepareWAMessageMedia({ image: { url: bannerUrl } }, { upload: conn.waUploadToServer })
   const thumb = (await conn.getFile(miniaturaUrl)).data
@@ -63,7 +63,7 @@ let handler = async (m, { conn }) => {
   // 2) Documento visual del pacto Shadow intacto
   await conn.sendMessage(m.chat, {
     document: { url: documentoUrl },
-    fileName: '☽ Pacto Shadow ☽',
+    fileName: '☽ Shadow ☽',
     mimetype: 'application/pdf',
     caption: "『📜』 uwu...\nPOWERED BY SHADOWBUG",
     jpegThumbnail: thumb
