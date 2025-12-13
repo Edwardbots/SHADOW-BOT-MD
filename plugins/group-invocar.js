@@ -41,7 +41,7 @@ let handler = async (m, { conn, text }) => {
 
     // 👇 Aquí enviamos imagen + caption con menciones
     await conn.sendMessage(chatId, {
-      image: { url: 'https://files.catbox.moe/xr2m6u.jpg' }, // tu imagen personalizada
+      image: { url: 'https://files.catbox.moe/qjxuoj.jpg' }, // tu imagen personalizada
       caption: texto,
       mentions: mentionIds
     }, { quoted: m })
