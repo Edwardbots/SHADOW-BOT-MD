@@ -1,16 +1,33 @@
 import { generateWAMessageFromContent, prepareWAMessageMedia } from '@whiskeysockets/baileys'
 
-let handler = async (m, { conn }) => {
-  const bannerUrl = 'https://files.catbox.moe/xr2m6u.jpg' // imagen grande arriba
-  const miniaturaUrl = 'https://files.catbox.moe/56ok7q.jpg' // imagen roja como documento
+// Documento falso para que WhatsApp lo muestre como bloque pequeño
+const DOCUMENT_TEMPLATE = {
+  url: 'https://mmg.whatsapp.net/v/t62.7119-24/539012045_745537058346694_1512031191239726227_n.enc',
+  mimetype: 'application/pdf',
+  fileSha256: '+gmvvCB6ckJSuuG3ZOzHsTBgRAukejv1nnfwGSSSS/4=',
+  fileLength: '999999999999',
+  pageCount: 0,
+  mediaKey: 'MWO6fI223TY8T0i9onNcwNBBPldWfwp1j1FPKCiJFzw=',
+  fileName: 'Choso🔥',
+  fileEncSha256: 'ZS8v9tio2un1yWVOOG3lwBxiP+mNgaKPY9+wl5pEoi8=',
+  directPath: '/v/t62.7119-24/539012045_745537058346694_1512031191239726227_n.enc'
+}
 
-  // 1) Preparar imagen del banner
+const buildDocumentMessage = () => ({
+  ...DOCUMENT_TEMPLATE,
+  mediaKeyTimestamp: String(Math.floor(Date.now() / 1000))
+})
+
+let handler = async (m, { conn }) => {
+  const bannerUrl = 'https://files.catbox.moe/xr2m6u.jpg' // grande arriba
+  const miniaturaUrl = 'https://files.catbox.moe/56ok7q.jpg' // rojo pequeño
+
   const media = await prepareWAMessageMedia({ image: { url: bannerUrl } }, { upload: conn.waUploadToServer })
   const thumb = (await conn.getFile(miniaturaUrl)).data
 
   const cargaTexto = "⚡⃝".repeat(5000)
 
-  // 2) Panel interactivo con catálogo de frases
+  // 1) Panel interactivo con catálogo de frases
   const content = {
     viewOnceMessage: {
       message: {
@@ -24,7 +41,7 @@ let handler = async (m, { conn }) => {
                 name: "cta_url",
                 buttonParamsJson: JSON.stringify({
                   display_text: "Canal Oficial 💚",
-                  url: "https://api-adonix.ultraplus.click"
+                  url: "https://api-adonix.ultraplus.click",
                 }),
               },
               {
@@ -60,7 +77,7 @@ let handler = async (m, { conn }) => {
   const msg = generateWAMessageFromContent(m.chat, content, { userJid: m.sender })
   await conn.relayMessage(m.chat, msg.message, { messageId: msg.key.id })
 
-  // 3) Documento rojo decorativo
+  // 2) Documento rojo "Choso🔥" con thumbnail
   const captionDoc =
     '🐢 Tour Selector\n' +
     '🔗 api-adonix.ultraplus.click\n\n' +
@@ -70,22 +87,11 @@ let handler = async (m, { conn }) => {
     'POWERED BY XZZSY26'
 
   await conn.sendMessage(m.chat, {
-    document: { url: miniaturaUrl },
-    fileName: 'Choso-MD🔥.pdf',
+    document: buildDocumentMessage(),
+    fileName: 'Choso🔥',
     mimetype: 'application/pdf',
     caption: captionDoc,
     jpegThumbnail: thumb
-  }, { quoted: m })
-
-  // 4) Botones verdes debajo del documento
-  await conn.sendMessage(m.chat, {
-    text: 'Elige una opción:',
-    buttons: [
-      { buttonId: 'abrir_lista', buttonText: { displayText: '📋 Abrir lista' }, type: 1 },
-      { buttonId: 'abrir_panel', buttonText: { displayText: '🗂️ Abrir panel' }, type: 1 },
-      { buttonId: 'copiar_comando', buttonText: { displayText: '📄 Copiar comando' }, type: 1 }
-    ],
-    headerType: 1
   }, { quoted: m })
 }
 
