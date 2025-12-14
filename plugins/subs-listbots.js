@@ -59,8 +59,7 @@ const interactiveMessage = {
     footer: { text: "¡Únete a nuestro canal para más novedades!" },
     header: { 
         imageMessage: {
-            url: "https://files.catbox.moe/1iurgf.jpg",
-            mimetype: "image/jpeg"
+            url: "https://files.catbox.moe/1iurgf.jpg"
         }
     },
     nativeFlowMessage: {
@@ -81,7 +80,7 @@ await conn.sendMessage(m.chat, {
 }, { quoted: m })
 
 } catch (error) {
-m.reply(`⚠︎ Se ha producido un problema.\n> Usa *${usedPrefix}report* para informarlo.\n\n${error.message}`)
+m.reply(`⚠︎ ¡Ups! Algo falló.\n> Por favor, contacta al administrador si el problema persiste.\n\nDetalle técnico: ${error.message}`)
 }}
 
 handler.tags = ["serbot"]
