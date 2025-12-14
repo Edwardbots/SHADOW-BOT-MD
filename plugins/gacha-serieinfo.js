@@ -12,7 +12,7 @@ const handler = async (_0x3efd03, {
 }) => {
   try {
     if (!global.db.data.chats?.[_0x3efd03.chat]?.["gacha"] && _0x3efd03.isGroup) {
-      return _0x3efd03.reply("ꕥ Los comandos de Gacha están desactivados en este grupo.\n\nUn *administrador* puede activarlos con el comando:\n» *" + _0x2ce678 + "gacha on*");
+      return _0x3efd03.reply("ꕥ Los comandos de *Gacha* están desactivados en este grupo.\n\nUn *administrador* puede activarlos con el comando:\n» *" + _0x2ce678 + "gacha on*");
     }
     const _0x2ea2ad = await loadCharacters();
     switch (_0x3972c5) {
@@ -68,31 +68,23 @@ const handler = async (_0x3efd03, {
               Array.isArray(_0x4f0e2a.characters) && _0x4f0e2a.characters.includes(_0xd4f65a.id)
             )
           );
- la serie *" + _0x25c916 + "*\n> Puedes sugerirlo usando el comando *" + _0x2ce678 + "suggest sugerencia de serie: " + _0x25c916 + '*');
-          }
-          let _0x23a41e = Array.isArray(_0x21b110.characters) ? _0x21b110.characters : [];
-          const _0x261a87 = _0x23a41e.length;
-          const _0x164034 = _0x23a41e.filter(_0xd4f65a =>
-            Object.values(global.db.data.users).some(_0x4f0e2a =>
-              Array.isArray(_0x4f0e2a.characters) && _0x4f0e2a.characters.includes(_0xd4f65a.id)
-            )
-          );
           _0x23a41e.sort((_0x585056, _0x49ae43) => {
             const _0x299319 = global.db.data.characters?.[_0x585056.id] || {};
             const _0x58cec2 = global.db.data.characters?.[_0x49ae43.id] || {};
             const _0x515fc5 = typeof _0x299319.value === 'number' ? _0x299319.value : Number(_0x585056.value || 0x0);
-             const _0xb27ee = typeof _0x58cec2.value === 'number' ? _0x58cec2.value : Number(_0x49ae43.value || 0x0);
+            const _0xb27ee = typeof _0x58cec2.value === 'number' ? _0x58cec2.value : Number(_0x49ae43.value || 0x0);
             return _0xb27ee - _0x515fc5;
           });
           let _0x2b72c5 = "*❀ Fuente: `<" + (_0x21b110.name || _0x5299d2) + ">`*\n\n";
           _0x2b72c5 += "❏ Personajes » *`" + _0x261a87 + "`*\n";
-          _0x2b72c5 += "♡ Reclamados » *`" + _0x164034.length + '/' + _0x261a87 + " (" + (_0x164034.length / _0x261a87 * 0x64).toFixed(0x0) + "%)`*\n";
+          _0x2b72c5 += "♡ Reclamados » *`" + _0x164034.length + '/' + _0x261a87 + " (" + (_0x164034.length / _0x261a87 * 100).toFixed(0) + "%)`*\n";
           _0x2b72c5 += "❏ Lista de personajes:\n\n";
           for (const _0x32a452 of _0x23a41e) {
             const _0x1306ee = global.db.data.characters?.[_0x32a452.id] || {};
             const _0x5ccef9 = typeof _0x1306ee.value === "number" ? _0x1306ee.value : Number(_0x32a452.value || 0x0);
             const _0x20cdb2 = Object.entries(global.db.data.users).find(([, _0x225c89]) =>
-              Array.isArray(_0x225c89.characters) && _0x225c89.characters.includes(_0x32a452.id)
+
+Array.isArray(_0x225c89.characters) && _0x225c89.characters.includes(_0x32a452.id)
             );
             let _0x2c4d39 = await (async () =>
               _0x20cdb2?.[0x0]
