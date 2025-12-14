@@ -14,10 +14,10 @@ export async function before(m, { conn, isAdmin, isBotAdmin, isOwner, isROwner})
 
   // Bloqueo de chats privados si la opción está activada
   if (bot.antiPrivate &&!isOwner &&!isROwner) {
-    const grupoURL = 'https://chat.whatsapp.com/If3WAOMJqZp2WLqDp9n4Cw?mode=ems_copy_t'; // ← nuevo enlace de grupo
+    const grupoURL = 'https://chat.whatsapp.com/ETHW7aP7kOICrR2RBrfE6N'; // ← nuevo enlace de grupo
     const nombreUsuario = await conn.getName(m.sender); // obtiene el nombre del que escribió
     const mensajeBloqueo = `⚠️ *Hola ${nombreUsuario}*, mi creador ha desactivado los comandos en chats privados.\n\nPor lo tanto, serás bloqueado automáticamente.\n\n🌌 *Únete al grupo oficial para usar el bot:*\n${grupoURL}`;
-    const imagenURL = 'https://adonixfiles.mywire.org/files/xzadonix_07.jpg'; // URL de la imagen
+    const imagenURL = 'https://files.catbox.moe/y6hfiv.jpg'; // URL de la imagen
 
     // Enviar la imagen junto con el mensaje de bloqueo
     await conn.sendFile(m.chat, imagenURL, 'antiprivado.jpg', mensajeBloqueo, m, false, { mentions: [m.sender]});
