@@ -65,7 +65,7 @@ ${subBotsActivos}`
           index: 1,
           urlButton: {
             displayText: "Canal Oficial",
-            url: ""
+            url: "https://whatsapp.com/channel/0029VbArz9fAO7RGy2915k3O"
 }
 }
       ],
