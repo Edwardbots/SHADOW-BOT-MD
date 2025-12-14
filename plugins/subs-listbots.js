@@ -59,7 +59,7 @@ ${subBotsActivos}`
     await conn.sendMessage(m.chat, {
       image: imageBuffer,
       caption: message,
-      footer: "¡Únete a nuestro canal para más novedades!",
+      footer: "¡Usa el botón para ser Sub-Bots!",
       buttons: [
         {
           buttonId: ".code",
