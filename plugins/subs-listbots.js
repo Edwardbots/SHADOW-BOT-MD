@@ -6,8 +6,11 @@ let handler = async (m, { conn: _envio, command, usedPrefix, args, text, isOwner
   const isCommand2 = /^(stop|pausarai|pausarbot)$/i.test(command);
   const isCommand3 = /^(bots|sockets|socket)$/i.test(command);
 
+  const botNameSafe = typeof botname !== 'undefined' ? botname : 'Sub-Bot';
+  const jadiSafe = typeof jadi !== 'undefined' ? jadi : 'sessions';
+
   async function reportError(e) {
-    await m.reply('⚠️ Ocurrió un error.');
+    await m.reply('⚠️ Ocurrió un error en el sistema de Sub-Bots. Consulte la consola.');
     console.log(e);
   }
 
@@ -15,7 +18,7 @@ let handler = async (m, { conn: _envio, command, usedPrefix, args, text, isOwner
     case isCommand1:
       let who = m.mentionedJid && m.mentionedJid[0] ? m.mentionedJid[0] : m.fromMe ? conn.user.jid : m.sender;
       let uniqid = `${who.split('@')[0]}`;
-      const sessionPath = `./${jadi}/${uniqid}`; 
+      const sessionPath = `./${jadiSafe}/${uniqid}`; 
 
       if (!existsSync(sessionPath)) {
         await conn.sendMessage(m.chat, {
@@ -46,7 +49,7 @@ let handler = async (m, { conn: _envio, command, usedPrefix, args, text, isOwner
       if (global.conn.user.jid === conn.user.jid) {
         conn.reply(m.chat, `⚠️ Este comando solo funciona si eres *Sub-Bot*.\n\n📞 Comunícate con el número principal para activarte:\nhttps://wa.me/573136379995?text=${usedPrefix}code`, m);
       } else {
-        await conn.reply(m.chat, `🛑 ${botname} desactivada.`, m); 
+        await conn.reply(m.chat, `🛑 ${botNameSafe} desactivada.`, m); 
         conn.ws.close();
       }
       break;
@@ -100,7 +103,7 @@ Shadow | Sub-bots [ ${index + 1} ]
           {
               name: "cta_url",
               buttonParamsJson: JSON.stringify({
-                  display_text: "Canal Oficial ",
+                  display_text: "Canal Oficial",
                   url: "https://whatsapp.com/channel/0029VbArz9fAO7RGy2915k3O"
               })
           }
