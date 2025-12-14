@@ -56,35 +56,19 @@ ${subBotsActivos}`
 
     const imageBuffer = (await axios.get("https://files.catbox.moe/1iurgf.jpg", { responseType: 'arraybuffer'})).data
 
-    const interactiveMessage = {
-      body: { text: message},
-      footer: { text: "¡Únete a nuestro canal para más novedades!"},
-      header: {
-        imageMessage: {
-          mimetype: "image/jpeg",
-          jpegThumbnail: imageBuffer
-}
-},
-      nativeFlowMessage: {
-        buttons: [
-          {
-            name: "cta_url",
-            buttonParamsJson: JSON.stringify({
-              display_text: "Canal Oficial",
-              url: "https://whatsapp.com/channel/0029VbArz9fAO7RGy2915k3O"
-})
-}
-        ],
-        messageParamsJson: ""
-}
-}
-
     await conn.sendMessage(m.chat, {
-      viewOnceMessage: {
-        message: {
-          interactiveMessage
+      image: imageBuffer,
+      caption: message,
+      footer: "¡Únete a nuestro canal para más novedades!",
+      templateButtons: [
+        {
+          index: 1,
+          urlButton: {
+            displayText: "Canal Oficial",
+            url: ""
 }
-},
+}
+      ],
       contextInfo: {
         mentionedJid: mentionList
 }
