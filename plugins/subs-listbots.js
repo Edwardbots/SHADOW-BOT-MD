@@ -1,6 +1,5 @@
-import { readdirSync, statSync, unlinkSync, existsSync, readFileSync, watch, rmSync, promises as fsPromises } from "fs";
-const fs = { ...fsPromises, existsSync };
-import path, { join } from 'path';
+import { promises as fsPromises } from "fs";
+const fs = { ...fsPromises, existsSync: (path) => require('fs').existsSync(path), rmdirSync: (path, options) => require('fs').rmdirSync(path, options) };
 import ws from 'ws';
 
 let handler = async (m, { conn: _envio, command, usedPrefix, args, text, isOwner }) => {
@@ -17,7 +16,7 @@ let handler = async (m, { conn: _envio, command, usedPrefix, args, text, isOwner
     case isCommand1:
       let who = m.mentionedJid && m.mentionedJid[0] ? m.mentionedJid[0] : m.fromMe ? conn.user.jid : m.sender;
       let uniqid = `${who.split('@')[0]}`;
-      const sessionPath = `./${jadi}/${uniqid}`;
+      const sessionPath = `./${jadi}/${uniqid}`; 
 
       if (!fs.existsSync(sessionPath)) {
         await conn.sendMessage(m.chat, {
@@ -48,7 +47,7 @@ let handler = async (m, { conn: _envio, command, usedPrefix, args, text, isOwner
       if (global.conn.user.jid === conn.user.jid) {
         conn.reply(m.chat, `⚠️ Este comando solo funciona si eres *Sub-Bot*.\n\n📞 Comunícate con el número principal para activarte:\nhttps://wa.me/573136379995?text=${usedPrefix}code`, m);
       } else {
-        await conn.reply(m.chat, `🛑 ${botname} desactivada.`, m);
+        await conn.reply(m.chat, `🛑 ${botname} desactivada.`, m); 
         conn.ws.close();
       }
       break;
@@ -69,44 +68,52 @@ let handler = async (m, { conn: _envio, command, usedPrefix, args, text, isOwner
         if (horas) resultado += `${horas} horas, `;
         if (minutos) resultado += `${minutos} minutos, `;
         if (segundos) resultado += `${segundos} segundos`;
-        return resultado;
+        if (resultado.endsWith(', ')) {
+          resultado = resultado.slice(0, -2);
+        }
+        return resultado || 'Menos de 1 segundo';
       }
-
-      const message = users.map((v, index) => `
-┏━━━━━✦୨୧✦━━━━━┓
-┃ ✨ Sub-Bot #${index + 1} ✨
-┃ 📎 Link: wa.me/${v.user.jid.replace(/[^0-9]/g, '')}?text=${usedPrefix}estado
-┃ 👤 Usuario: ${v.user.name || 'Sub-Bot'}
-┃ 🕒 Conexión: ${v.uptime ? convertirMsADiasHorasMinutosSegundos(Date.now() - v.uptime) : 'Tiempo Desconocido 💀'}
-┗━━━━━✦୨୧✦━━━━━┛
-`).join('\n');
+      
+      const message = users.map((v, index) => {
+          const mention = v.user.jid.split('@')[0];
+          const botNumber = v.user.jid.replace(/[^0-9]/g, '');
+          const botName = v.user.name || 'Sub-Bot';
+          const uptime = v.uptime ? convertirMsADiasHorasMinutosSegundos(Date.now() - v.uptime) : 'Tiempo Desconocido 💀';
+          
+          return `
+Shadow | Sub-bots [ ${index + 1} ]
+ 
+🌿 Tag:: @${mention}
+🌴 ID:: wa.me/${botNumber}?text=.menu
+🌱 Bot:: ${botName}
+🍄 Uptime:: ${uptime}
+────────────────`.trim();
+      }).join('\n\n'); 
 
       const replyMessage = message.length === 0
         ? `🚫 Actualmente no hay Sub-Bots disponibles.\n⏳ Por favor, vuelva a intentarlo más tarde.`
         : message;
 
-      const totalUsers = users.length;
+      const responseMessage = replyMessage;
 
-      const responseMessage = `
-╭❍👻 *SUBS ACTIVOS* 😈❍╮
-
-⚠️ \`\`\`
-Cada Sub-Bot utiliza sus funciones de manera independiente.
-El número principal no se hace responsable del mal uso.
-\`\`\`
-
-😈 *Total de Sub-Bots Conectados:* ${totalUsers || '0'}
-
-${replyMessage}
-
-╰❍👻 *canal de shadow* 👻❍╯
-🔗 https://whatsapp.com/channel/0029VbArz9fAO7RGy2915k3O`.trim();
+      const buttons = [
+          {
+              name: "cta_url",
+              buttonParamsJson: JSON.stringify({
+                  display_text: "Canal Oficial",
+                  url: "https://whatsapp.com/channel/0029VbArz9fAO7RGy2915k3O"
+              })
+          }
+      ];
 
       await _envio.sendMessage(m.chat, {
         image: { url: 'https://files.catbox.moe/1iurgf.jpg' },
         caption: responseMessage,
-        mentions: _envio.parseMention(responseMessage)
+        mentions: _envio.parseMention(responseMessage),
+        buttons: buttons, 
+        footer: 'Presiona el botón para ir al canal oficial.', 
       }, { quoted: m });
+      
       break;
   }
 };
