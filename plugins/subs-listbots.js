@@ -1,5 +1,6 @@
 import ws from "ws"
 import axios from "axios"
+import { generateWAMessageContent, generateWAMessageFromContent, proto} from '@whiskeysockets/baileys'
 
 const handler = async (m, { conn, command, usedPrefix}) => {
   try {
@@ -48,30 +49,58 @@ const handler = async (m, { conn, command, usedPrefix}) => {
 
     const countSubBotsActivos = users.length - 1
 
-    const message = `\`🌴 Subbots activos:\` *${countSubBotsActivos}/20*
-
-${subBotsActivos}`
+    const message = `\`🌴 Subbots activos:\` *${countSubBotsActivos}/20*\n\n${subBotsActivos}`
 
     const mentionList = users.filter(jid => jid!== global.conn.user.jid)
 
     const imageBuffer = (await axios.get("https://files.catbox.moe/1iurgf.jpg", { responseType: 'arraybuffer'})).data
 
-    await conn.sendMessage(m.chat, {
-      image: imageBuffer,
-      caption: message,
-      footer: "¡Usa el botón para ser Sub-Bots!",
-      buttons: [
+    const { imageMessage} = await generateWAMessageContent({ image: imageBuffer}, { upload: conn.waUploadToServer});
+
+    const interactiveButtons = [
         {
-          buttonId: ".code",
-          buttonText: { displayText: "Ser Sub-Bot"},
-          type: 1
-}
-      ],
-      headerType: 4,
-      contextInfo: {
-        mentionedJid: mentionList
-}
-}, { quoted: m})
+            name: 'quick_reply',
+            buttonParamsJson: JSON.stringify({
+                display_text: "Ser Sub-Bot",
+                id: ".code"
+            })
+        },
+        {
+            name: "cta_url",
+            buttonParamsJson: JSON.stringify({
+                display_text: "Canal Oficial",
+                url: "https://whatsapp.com/channel/0029VbArz9fAO7RGy2915k3O"
+            })
+        }
+    ];
+
+    const messageParamsJson = JSON.stringify({});
+
+    const interactiveMessage = generateWAMessageFromContent(m.chat, {
+      viewOnceMessage: {
+        message: {
+          messageContextInfo: { deviceListMetadata: {}, deviceListMetadataVersion: 2},
+          interactiveMessage: proto.Message.InteractiveMessage.fromObject({
+            body: { text: message.trim()},
+            footer: { text: "¡Usa el botón para ser Sub-Bots!"},
+            header: {
+              hasMediaAttachment: true,
+              imageMessage
+            },
+            nativeFlowMessage: {
+              buttons: interactiveButtons,
+              messageParamsJson
+            },
+            contextInfo: {
+                mentionedJid: mentionList
+            }
+          })
+        }
+      }
+    }, { quoted: m});
+    
+    await conn.relayMessage(m.chat, interactiveMessage.message, { messageId: interactiveMessage.key.id});
+
 
 } catch (error) {
     m.reply(`⚠︎ ¡Ups! Algo falló.\n> Por favor, contacta al administrador si el problema persiste.\n\nDetalle técnico: ${error.message}`)
@@ -80,6 +109,6 @@ ${subBotsActivos}`
 
 handler.tags = ["serbot"]
 handler.help = ["botlist"]
-handler.command = ["botlist", "listbots", "listbot", "bots", "sockets", "socket"]
+handler.command = ["botlist", "listbots", "listbot", "bots"]
 
 export default handler
