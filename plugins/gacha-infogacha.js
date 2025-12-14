@@ -28,7 +28,7 @@ const verifi = async () => {
   try {
     const _0x53d9aa = await _0x10dde7.readFile('./package.json', "utf-8");
     const _0x296bfc = JSON.parse(_0x53d9aa);
-    return _0x296bfc.repository?.["url"] === "git+https://github.com/meado-learner/Michi-WaMD.git";
+    return _0x296bfc.repository?.["url"] === "git+https://github.com/meado-learner/SHADOW-BOT-MD.git";
   } catch {
     return false;
   }
@@ -38,7 +38,7 @@ let handler = async (_0x3ec4ec, {
   usedPrefix: _0x164df6
 }) => {
   if (!(await verifi())) {
-    return _0x1bb80e.reply(_0x3ec4ec.chat, "❀ El comando *<" + command + ">* solo está disponible para Michi", _0x3ec4ec);
+    return _0x1bb80e.reply(_0x3ec4ec.chat, "❀ El comando *<" + command + ">* solo está disponible para Shadow", _0x3ec4ec);
   }
   if (!global.db.data.chats?.[_0x3ec4ec.chat]?.["gacha"] && _0x3ec4ec.isGroup) {
     return _0x3ec4ec.reply("ꕥ Los comandos de *Gacha* están desactivados en este grupo.\n\nUn *administrador* puede activarlos con el comando:\n» *" + _0x164df6 + "gacha on*");
