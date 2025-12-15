@@ -7,7 +7,7 @@ let handler = async (m, { conn }) => {
   let list = [
     {
       displayName: ' Shadow Creator ',
-      vcard: `BEGIN:VCARD\nVERSION:3.0\nFN:Shadow Master\nTEL;type=CELL;waid=584242773183:+58 424-2773183\nTEL;type=CELL;waid=50493732693:+504 9373-2693\nEND:VCARD`
+      vcard: `BEGIN:VCARD\nVERSION:3.0\nFN:Shadow Master\nTEL;type=CELL;waid=584242773183:+58 424-2773183\nTEL;type=CELL;waid=50493732693:+504 9373-2693\nTEL;type=CELL;waid=5491124918653:+54 9 11-2491-8653\nEND:VCARD`
     }
   ]
 
@@ -48,7 +48,8 @@ https://whatsapp.com/channel/0029VbArz9fAO7RGy2915k3O
 
 📱 𝗖𝗢𝗡𝗧𝗔𝗖𝗧𝗢𝗦 𝗗𝗘 𝗟𝗔 𝗢𝗥𝗚𝗔𝗡𝗜𝗭𝗔𝗖𝗜𝗢́𝗡:  
 👑 Creador Principal 🎅: +58 424-2773183 (Yosue)  
-❄️ Segundo creador 🎁: +504 9373-2693 (ado)
+❄️ Segundo creador 🎁: +504 9373-2693 (ado)  
+🎁 tercer Creador 🎄: +54 9 11-2491-8653 (Fede)
 
 🧬 𝗖𝗢𝗗𝗘 𝗗𝗘 𝗔𝗖𝗖𝗘𝗦𝗢:  
 https://wa.me/522483649647?text=.code
