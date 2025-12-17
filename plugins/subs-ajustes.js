@@ -41,7 +41,7 @@ await m.react('🕒')
 const id = text || m.chat
 const chat = global.db.data.chats[m.chat]
 chat.welcome = false
-await conn.reply(id, `❀ Adiós a todos, ${botname} se despide! (≧ω≦)ゞ`)
+await conn.reply(id, `bueno entiendo 😓 me saldre del grupo byes a todos 👋, ${botname} se despide 🌌`)
 await conn.groupLeave(id)
 chat.welcome = true
 await m.react('✔️')
