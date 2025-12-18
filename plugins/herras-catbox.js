@@ -23,7 +23,8 @@ let handler = async (m, { conn }) => {
       return conn.reply(m.chat, `${emoji} ❄️ *Las sombras no pudieron descargar el archivo.*`, m);
     }
 
-    let isTele = /image\/(png|jpe?g|gif)|video\/mp4/.test(mime);
+    let isImage = /image\/(png|jpe?g|gif)/.test(mime);
+    let isVideo = /video\/mp4/.test(mime);
     let link = await catbox(media);
 
     let txt = `╔══✦🌌🎄✦══╗
@@ -33,18 +34,31 @@ let handler = async (m, { conn }) => {
 
 📂 *Enlace*: ${link}
 📏 *Tamaño*: ${formatBytes(media.length)}
-⏳ *Expiración*: ${isTele ? 'No expira' : 'Desconocido'}
+⏳ *Expiración*: ${isImage || isVideo ? 'No expira' : 'Desconocido'}
 
 ✨ *Invocado por:* ${dev}
 `;
 
-    // Enviar archivo con sendMessage
-    await conn.sendMessage(m.chat, {
-      document: media,
-      mimetype: mime,
-      fileName: `archivo.${mime.split('/')[1] || 'bin'}`,
-      caption: txt
-    }, { quoted: m });
+    // Enviar como imagen o video según el tipo
+    if (isImage) {
+      await conn.sendMessage(m.chat, {
+        image: media,
+        caption: txt
+      }, { quoted: m });
+    } else if (isVideo) {
+      await conn.sendMessage(m.chat, {
+        video: media,
+        caption: txt
+      }, { quoted: m });
+    } else {
+      // fallback: si no es imagen ni video, lo manda como documento
+      await conn.sendMessage(m.chat, {
+        document: media,
+        mimetype: mime,
+        fileName: `archivo.${mime.split('/')[1] || 'bin'}`,
+        caption: txt
+      }, { quoted: m });
+    }
 
     await m.react(done);
   } catch (err) {
@@ -54,9 +68,9 @@ let handler = async (m, { conn }) => {
   }
 };
 
-handler.help = ['tourl2'];
-handler.tags = ['transformador'];
-handler.command = ['catbox', 'tourl2'];
+handler.help = ['catbox'];
+handler.tags = ['tools'];
+handler.command = ['catbox'];
 export default handler;
 
 function formatBytes(bytes) {
@@ -89,4 +103,4 @@ async function catbox(content) {
 
   if (!response.ok) throw new Error(`Error en Catbox: ${response.statusText}`);
   return await response.text();
-  }
+}
