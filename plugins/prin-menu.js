@@ -7,8 +7,8 @@ let handler = async (m, { conn, usedPrefix }) => {
     const isRegistered = global.db.data.users[m.sender]?.registered;
     if (!isRegistered) {
       return conn.sendMessage(m.chat, {
-        text: `┏━━━━━━━━━━━━━━━━━━┓\n🎄 *ACCESO DENEGADO* 🎄\n┗━━━━━━━━━━━━━━━━━━┛\n\n🎅 Lo siento, viajero de las sombras...\n✨ Para acceder al menú navideño debes estar registrado.\n\n🔐 Usa *${usedPrefix}reg shadow.18* para unirte al Reino.\n🎁 ¡Las sombras te esperan!`,
-        buttons: [{ buttonId: `${usedPrefix}reg shadow.18`, buttonText: { displayText: '✅ Reg Shadow.18' }, type: 1 }],
+        text: `┏━━━━━━━━━━━━━━━━━━┓\n🎄 *ACCESO DENEGADO* 🎄\n┗━━━━━━━━━━━━━━━━━━┛\n\n🕯️ Lo siento, viajero del Shadow Garden...\n✨ Para acceder al *Gran Banquete Navideño de las Sombras* debes estar registrado.\n\n🔐 Usa *${usedPrefix}reg shadow.18* para unirte al Reino.\n🎁 ¡Las Sombras festivas te esperan!`,
+        buttons: [{ buttonId: `${usedPrefix}reg shadow.18`, buttonText: { displayText: '🎅 Reg Shadow.18' }, type: 1 }],
         headerType: 6
       }, { quoted: m });
     }
@@ -27,7 +27,7 @@ let handler = async (m, { conn, usedPrefix }) => {
     let uptimeSec = process.uptime();
     let uptimeStr = `${Math.floor(uptimeSec / 3600)}h ${Math.floor((uptimeSec % 3600) / 60)}m ${Math.floor(uptimeSec % 60)}s`;
 
-    let botNameToShow = global.botname || "Shadow 🎄";
+    let botNameToShow = global.botname || "Shadow Garden 🎄";
     let videoUrl = "https://files.catbox.moe/2gczk3.mp4"; 
 
     const tz = "America/Tegucigalpa";
@@ -35,37 +35,53 @@ let handler = async (m, { conn, usedPrefix }) => {
     const hour = now.hour();
     const timeStr = now.format("HH:mm:ss");
 
-    let saludoNavideño = "🌟 *¡Feliz Día de Sombra!* 🌟";
-    if (hour >= 12 && hour < 18) saludoNavideño = "🎁 *¡Tarde de Regalos!* 🎁";
-    else if (hour >= 18 || hour < 5) saludoNavideño = "🕯️ *¡Noche de Luces!* 🕯️";
+    // Mensajes navideños según la hora
+    let saludoNavideño = "🌟 *¡Sombras festivas te rodean!* 🌟";
+    if (hour >= 6 && hour < 12) saludoNavideño = "🎄 *¡Buenos días sombríos y navideños en el Shadow Garden!* 🎄";
+    else if (hour >= 12 && hour < 18) saludoNavideño = "🎁 *¡Tarde de regalos y risas en el Reino!* 🎁";
+    else saludoNavideño = "🕯️ *¡Noche de luces, misterio y villancicos sombríos!* 🕯️";
 
     const tagUser = '@' + m.sender.split('@')[0];
-    const separador = '—————————————';
+    const separador = '❄️❄️❄️❄️❄️❄️❄️❄️';
 
     let txt = `
-╔═══════ 🎄 ═══════╗
-   *M E N Ú D E L A S S O M B R A S*
-╚═══════ ❄️ ═══════╝
+╔════════ 🎅 ════════╗
+   *M E N Ú N A V I D E Ñ O - S H A D O W G A R D E N*
+╚════════ ❄️ ════════╝
 
 ${saludoNavideño} ${tagUser}
 
 ${separador}
 
-*★ D A T O S - B O T*
-• *Nombre:* ${botNameToShow}
-• *Estado:* ${(conn.user.jid == global.conn.user.jid ? 'Principal 🅥' : 'Sub-Bot 🅑')}
-• *Uptime:* ${uptimeStr}
-• *Hora (TGU):* ${timeStr}
+*★ D A T O S - D E L - R E I N O*
+🎄 *Nombre:* ${botNameToShow}
+🎁 *Estado:* ${(conn.user.jid == global.conn.user.jid ? 'Principal 🅥' : 'Sub-Bot 🅑')}
+⛄ *Uptime:* ${uptimeStr}
+🕯️ *Hora (TGU):* ${timeStr}
 
 ${separador}
 
-*★ M E N U - C O M A N D O S*
+*★ C O M A N D O S - N A V I D E Ñ O S*
 `;
 
+    // Emojis navideños para las categorías
     const iconos = {
-      'main': '🏠', 'menu': '📜', 'rg': '📝', 'rpg': '⚔️', 'econ': '💰', 'group': '👥',
-      'tools': '🔧', 'admin': '👑', 'owner': '🌟', 'fun': '🎈', 'sticker': '🖼️',
-      'downloader': '📥', 'internet': '📡', 'audio': '🎧', 'nsfw': '🔞', 'xp': '✨'
+      'main': '🎄', 
+      'menu': '❄️', 
+      'rg': '🎅', 
+      'rpg': '🦌', 
+      'econ': '🎁', 
+      'group': '⛄',
+      'tools': '🔔', 
+      'admin': '⭐', 
+      'owner': '🌟', 
+      'fun': '🍬', 
+      'sticker': '🎨',
+      'downloader': '📥', 
+      'internet': '🌐', 
+      'audio': '🎶', 
+      'nsfw': '🎀', 
+      'xp': '✨'
     };
 
     for (let tag in menu) {
@@ -73,14 +89,14 @@ ${separador}
       txt += `\n*• ${tagTitle}*`;
       let commands = menu[tag].map(plugin => {
         const cmdList = Array.isArray(plugin.help) ? plugin.help : [plugin.help];
-        return cmdList.map(cmd => `   - ${usedPrefix}${cmd}`).join('\n');
+        return cmdList.map(cmd => `   🎄 ${usedPrefix}${cmd}`).join('\n');
       }).join('\n');
       txt += `\n${commands}\n`;
     }
 
-    txt += `\n${separador}\n*Creado por Yosue ❤️*`;
+    txt += `\n${separador}\n🎅 *Creado por Yosue • Shadow Garden Navideño 🕯️🎄*`;
 
-    await conn.sendMessage(m.chat, { react: { text: '☃️', key: m.key } });
+    await conn.sendMessage(m.chat, { react: { text: '🎄', key: m.key } });
 
     let mediaMessage = await prepareWAMessageMedia(
       { video: { url: videoUrl }, gifPlayback: true },
@@ -92,14 +108,14 @@ ${separador}
         {
           name: "single_select",
           buttonParamsJson: JSON.stringify({
-            title: "𝚂𝚎𝚕𝚎𝚌𝚝 𝙼𝚎𝚗𝚞",
+            title: "🎄 𝚂𝚎𝚕𝚎𝚌𝚝 𝙼𝚎𝚗𝚞 🎄",
             sections: [{
-              title: "Shadow-Ai 🌴",
+              title: "Shadow Garden 🌌",
               highlight_label: "🎄",
               rows: [
-                { title: "📊 Status", description: "Estado actual del bot", id: `${usedPrefix}status` },
-                { title: "🚀 Ping", description: "Velocidad de respuesta", id: `${usedPrefix}ping` },
-                { title: "👤 Creador", description: "Contacto de Yosue", id: `${usedPrefix}creador` }
+                { title: "📊 Status", description: "Estado actual del Reino", id: `${usedPrefix}status` },
+                { title: "🚀 Ping", description: "Velocidad de respuesta sombría", id: `${usedPrefix}ping` },
+                { title: "👤 Creador", description: "Contacto de Yosue, Maestro de las Sombras", id: `${usedPrefix}creador` }
               ]
             }]
           })
@@ -107,13 +123,13 @@ ${separador}
         {
           name: "cta_url",
           buttonParamsJson: JSON.stringify({
-            display_text: "Canal de WhatsApp",
+            display_text: "🎁 Canal del Reino 🎁",
             url: "https://whatsapp.com/channel/0029VbArz9fAO7RGy2915k3O"
           })
         }
       ],
       messageParamsJson: JSON.stringify({
-        bottom_sheet: { button_title: "🌲 Menu lista" }
+        bottom_sheet: { button_title: "🎅 Menú Navideño Shadow Garden 🎅" }
       })
     };
 
@@ -122,7 +138,7 @@ ${separador}
         message: {
           interactiveMessage: {
             body: { text: txt },
-            footer: { text: "Shadow-Ai • By Yosue ❤️" },
+            footer: { text: "Shadow Garden • Reino Navideño de las Sombras ❤️🎄" },
             header: {
               hasMediaAttachment: true,
               videoMessage: mediaMessage.videoMessage
@@ -140,10 +156,10 @@ ${separador}
 
   } catch (e) {
     console.error(e);
-    conn.reply(m.chat, "❌ Error al generar el menú.", m);
+    conn.reply(m.chat, "❌ Las Sombras fallaron al invocar el menú navideño.", m);
   }
 };
 
- 
-handler.command = ['menu'];  
+// los quero att:yosue uwu
+handler.command = ['menu', 'help', 'ayuda'];  
 export default handler;
