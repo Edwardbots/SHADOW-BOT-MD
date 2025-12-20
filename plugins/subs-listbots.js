@@ -59,7 +59,7 @@ const handler = async (m, { conn, command, usedPrefix}) => {
 
     const mentionList = users.filter(jid => jid!== global.conn.user.jid)
 
-    const imageBuffer = (await axios.get("https://files.catbox.moe/1iurgf.jpg", { responseType: 'arraybuffer'})).data
+    const imageBuffer = (await axios.get("https://files.catbox.moe/mwhyfm.jpg", { responseType: 'arraybuffer'})).data
 
     const { imageMessage} = await generateWAMessageContent({ image: imageBuffer}, { upload: conn.waUploadToServer});
 
