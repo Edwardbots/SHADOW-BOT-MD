@@ -37,7 +37,7 @@ global.author = "© mᥲძᥱ ᥕі𝗍һ 𝙮𝙤𝙨𝙪𝙚"
 global.etiqueta = "© 𝙮𝙤𝙨𝙪𝙚 | 𝟤𝟢𝟤𝟧"
 global.currency = "¢ Pesos"
 global.michipg = "https://files.catbox.moe/oqp2kh.jpg"
-global.icono = "https://files.catbox.moe/r5f3xk.jpg"
+global.icono = "https://files.catbox.moe/oqp2kh.jpg"
 global.catalogo = fs.readFileSync('./lib/catalogo.jpg')
 
 
