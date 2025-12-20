@@ -1,29 +1,29 @@
-import yts from "yt-search"
-import fetch from "node-fetch"
+import yts from "yt-search";
+import fetch from "node-fetch";
 
 const handler = async (m, { conn, text }) => {
-  if (!text) return m.reply("Escribe el nombre del video o un enlace de YouTube.")
+  if (!text) return m.reply("Escribe el nombre del video o un enlace de YouTube.");
 
-  await m.react("❄️")
+  await m.react("❄️");
 
   try {
-    let url = text
-    let title = "Desconocido"
-    let authorName = "Desconocido"
-    let durationTimestamp = "Desconocida"
-    let views = "Desconocidas"
-    let thumbnail = ""
+    let url = text;
+    let title = "Desconocido";
+    let authorName = "Desconocido";
+    let durationTimestamp = "Desconocida";
+    let views = "Desconocidas";
+    let thumbnail = "";
 
     if (!text.startsWith("https://")) {
-      const res = await yts(text)
-      if (!res?.videos?.length) return m.reply("No encontré nada.")
-      const video = res.videos[0]
-      title = video.title
-      authorName = video.author?.name
-      durationTimestamp = video.timestamp
-      views = video.views
-      url = video.url
-      thumbnail = video.thumbnail
+      const res = await yts(text);
+      if (!res?.videos?.length) return m.reply("No encontré nada.");
+      const video = res.videos[0];
+      title = video.title;
+      authorName = video.author?.name;
+      durationTimestamp = video.timestamp;
+      views = video.views;
+      url = video.url;
+      thumbnail = video.thumbnail;
     }
 
     const caption = `🎄 Shadow — Selección navideña
@@ -33,12 +33,12 @@ const handler = async (m, { conn, text }) => {
 🎬 Duración: ${durationTimestamp}
 👁️ Vistas: ${views}
 
-🎁 Elige qué deseas descargar:`
+🎁 Elige qué deseas descargar:`;
 
     const buttons = [
       { buttonId: `shadowaudio ${url}`, buttonText: { displayText: "🎧 Descargar Audio" }, type: 1 },
       { buttonId: `shadowvideo ${url}`, buttonText: { displayText: "🎥 Descargar Video" }, type: 1 }
-    ]
+    ];
 
     await conn.sendMessage(
       m.chat,
@@ -50,63 +50,73 @@ const handler = async (m, { conn, text }) => {
         headerType: 4
       },
       { quoted: m }
-    )
+    );
 
-    await m.react("✨")
-
+    await m.react("✨");
   } catch (e) {
-    m.reply("Error: " + e.message)
-    m.react("⚠️")
+    m.reply("Error: " + e.message);
+    m.react("⚠️");
   }
-}
+};
 
 handler.before = async (m, { conn }) => {
-  const selected = m?.message?.buttonsResponseMessage?.selectedButtonId
-  if (!selected) return
+  const selected = m?.message?.buttonsResponseMessage?.selectedButtonId;
+  if (!selected) return;
 
-  const parts = selected.split(" ")
-  const cmd = parts.shift()
-  const url = parts.join(" ")
+  const parts = selected.split(" ");
+  const cmd = parts.shift();
+  const url = parts.join(" ");
 
   if (cmd === "shadowaudio") {
-    return downloadMedia(conn, m, url, "mp3")
+    return downloadMedia(conn, m, url, "mp3");
   }
 
   if (cmd === "shadowvideo") {
-    return downloadMedia(conn, m, url, "mp4")
+    return downloadMedia(conn, m, url, "mp4");
   }
-}
+};
+
+// Función auxiliar para descargar el archivo como ArrayBuffer
+const fetchBuffer = async (url) => {
+  const response = await fetch(url);
+  const buffer = await response.buffer();
+  return buffer;
+};
 
 const downloadMedia = async (conn, m, url, type) => {
   try {
     const msg = type === "mp3"
       ? "🎄 Shadow — Descargando audio..."
-      : "🎄 Shadow — Descargando video..."
+      : "🎄 Shadow — Descargando video...";
 
-    const sent = await conn.sendMessage(m.chat, { text: msg }, { quoted: m })
+    const sent = await conn.sendMessage(m.chat, { text: msg }, { quoted: m });
 
     const apiUrl = type === "mp3"
       ? `https://api-adonix.ultraplus.click/download/ytaudio?url=${encodeURIComponent(url)}&apikey=AdonixKeyuxuacv6765`
-      : `https://api-adonix.ultraplus.click/download/ytvideo?url=${encodeURIComponent(url)}&apikey=AdonixKeyuxuacv6765`
+      : `https://api-adonix.ultraplus.click/download/ytvideo?url=${encodeURIComponent(url)}&apikey=AdonixKeyuxuacv6765`;
 
-    const r = await fetch(apiUrl)
-    const data = await r.json()
+    const r = await fetch(apiUrl);
+    const data = await r.json();
 
-    if (!data?.status || !data?.data?.url) return m.reply("No se pudo descargar el archivo.")
+    if (!data?.status || !data?.data?.url) return m.reply("No se pudo descargar el archivo.");
 
-    const fileUrl = data.data.url
-    const fileTitle = cleanName(data.data.title || "video")
+    const fileUrl = data.data.url;
+    const fileTitle = cleanName(data.data.title || "video");
 
     if (type === "mp3") {
+      // Descarga el archivo como buffer para usar con ptt
+      const audioBuffer = await fetchBuffer(fileUrl);
+
       await conn.sendMessage(
         m.chat,
         {
-          audio: { url: fileUrl },
+          audio: audioBuffer,
           mimetype: "audio/mpeg",
-          fileName: fileTitle + ".mp3"
+          fileName: fileTitle + ".mp3",
+          ptt: true
         },
         { quoted: m }
-      )
+      );
     } else {
       await conn.sendMessage(
         m.chat,
@@ -116,7 +126,7 @@ const downloadMedia = async (conn, m, url, type) => {
           fileName: fileTitle + ".mp4"
         },
         { quoted: m }
-      )
+      );
     }
 
     await conn.sendMessage(
@@ -125,20 +135,20 @@ const downloadMedia = async (conn, m, url, type) => {
         text: `🎄 Shadow — Completado\n\n✨ Título: ${fileTitle}`,
         edit: sent.key
       }
-    )
+    );
 
-    await m.react("✅")
-
+    await m.react("✅");
   } catch (e) {
-    m.reply("Error: " + e.message)
-    m.react("❌")
+    console.error(e);
+    m.reply("Error: " + e.message);
+    m.react("❌");
   }
-}
+};
 
-const cleanName = (name) => name.replace(/[^\w\s-_.]/gi, "").substring(0, 50)
+const cleanName = (name) => name.replace(/[^\w\s-_.]/gi, "").substring(0, 50);
 
-handler.command = ["play", "yt", "ytsearch"]
-handler.tags = ["descargas"]
-handler.register = true
+handler.command = ["play", "yt", "ytsearch"];
+handler.tags = ["descargas"];
+handler.register = true;
 
-export default handler
+export default handler;
