@@ -1,3 +1,4 @@
+// código echo por ado si vas a usarlo no robes créditos >:v
 import fetch, { FormData, Blob } from 'node-fetch'
 import crypto from 'crypto'
 import fs from 'fs'
