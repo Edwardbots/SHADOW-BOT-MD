@@ -7,11 +7,11 @@ global.botNumber = ""
 
 global.owner = [
 // ZONA DE JIDS
-["584242773183", "yosue </>", true],
-["523328418129"],
-["5491124918653"],
-["51900373696"],
-["50493732693"],
+["50432788804", "yosue </>", true],
+["50432788804"],
+["50432788804"],
+["50432788804"],
+["50432788804"],
 // ZONA DE LIDS 
 ["", "", true],
 ["", "", true], 
@@ -19,7 +19,7 @@ global.owner = [
 ]
 
 global.mods = []
-global.suittag = ["584242773183"] 
+global.suittag = ["50432788804"] 
 global.prems = []
 
 
@@ -31,10 +31,10 @@ global.jadi = "Sessions/SubBot"
 global.MichiJadibts = true
 
 global.botname = "Shadow-BOT-MD"
-global.textbot = "Shadow-BOT, yosue"
+global.textbot = "Shadow-BOT, Edward"
 global.dev = "SHADOW-BOT-MD"
-global.author = "© mᥲძᥱ ᥕі𝗍һ 𝙮𝙤𝙨𝙪𝙚"
-global.etiqueta = "© 𝙮𝙤𝙨𝙪𝙚 | 𝟤𝟢𝟤𝟧"
+global.author = "© mᥲძᥱ ᥕі𝗍һ Edward"
+global.etiqueta = "© Edward | 𝟤𝟢𝟤𝟧"
 global.currency = "¢ Pesos"
 global.michipg = "https://files.catbox.moe/oqp2kh.jpg"
 global.icono = "https://files.catbox.moe/oqp2kh.jpg"
